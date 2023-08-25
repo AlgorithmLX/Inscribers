@@ -34,7 +34,7 @@ object IngredientHelper {
     if (jsonElement.isJsonArray) return Ingredient.fromValues(
       StreamSupport.stream(jsonElement.getAsJsonArray.spliterator(), false)
         .map { `object` =>
-          val stack = stack(`object`.getAsJsonObject)
+          val stack = getStack(`object`.getAsJsonObject)
           new SingleItemList(stack)
         }
     ) else if (jsonElement.isJsonObject) {

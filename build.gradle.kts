@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import net.minecraftforge.gradle.patcher.tasks.ReobfuscateJar
 import net.minecraftforge.gradle.userdev.UserDevExtension
 import net.minecraftforge.gradle.userdev.tasks.JarJar
@@ -15,6 +16,7 @@ plugins {
     eclipse
     idea
     scala
+    id("com.github.johnrengelman.shadow") version "8.+"
     id("net.minecraftforge.gradle") version "6.+"
 }
 
@@ -35,8 +37,12 @@ java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 }
 
+configurations {
+    implementation.get().extendsFrom(this["shadow"])
+}
+
 configure<UserDevExtension> {
-    mappings("official", "$minecraft_version")
+    mappings("official", minecraft_version)
 
     accessTransformer(file("src/main/resources/META-INF/accesstransformer.cfg"))
 
@@ -109,19 +115,19 @@ repositories {
 dependencies {
     minecraft("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
-    implementation(fg.deobf("net.minecraftforge:Scorge:3.1.3"))
-    jarJar(group = "net.minecraftforge", name = "Scorge", version = "[3.1.3,3.1.4)")
+    val shadow = configurations["shadow"]
 
     implementation(fg.deobf("com.tterrag.registrate:Registrate:MC1.16.5-1.0.10"))
     jarJar(group = "com.tterrag.registrate", name = "Registrate", version = "[MC1.16.5,MC1.17)")
 
-    minecraftLibrary("org.scala-lang:scala-library:2.13.11")
-    minecraftLibrary("org.scala-lang:scala-reflect:2.13.11")
+    shadow("org.scala-lang:scala-library:2.13.11")
+    shadow("org.scala-lang:scala-reflect:2.13.11")
 
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 }
 
 tasks {
+    getByName("build").dependsOn("shadowJar")
     withType<Jar> {
         from(main.output)
         manifest {
@@ -139,6 +145,17 @@ tasks {
             )
         }
         finalizedBy("reobfJar")
+    }
+
+    getByName<ShadowJar>("shadowJar") {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+        configurations = listOf(project.configurations.getByName("shadow"))
+
+        archiveClassifier.set("")
+
+        mergeServiceFiles()
+        exclude("**/module-info.class")
     }
 
     withType<ReobfuscateJar> {

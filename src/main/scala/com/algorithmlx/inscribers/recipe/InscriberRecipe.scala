@@ -1,5 +1,6 @@
 package com.algorithmlx.inscribers.recipe
 
+import com.algorithmlx.inscribers.init.Register
 import net.minecraft.inventory.IInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.{IRecipe, IRecipeSerializer, IRecipeType, Ingredient}
@@ -34,19 +35,19 @@ class InscriberRecipe(
 
   override def getId: ResourceLocation = this.id
 
-  override def getSerializer: IRecipeSerializer[_] = ???
+  override def getSerializer: IRecipeSerializer[_] = Register.INSCRIBER_RECIPE.get()
 
   override def getType: IRecipeType[_] = recipeType
 
-  def getIngredient(): Ingredient = {
+  def getIngredient: Ingredient = {
     this.ingredient
   }
 
-  def getTime(): Int = {
+  def getTime: Int = {
     this.time
   }
 
-  def getEnergyCount(): Int = {
+  def getEnergyCount: Int = {
     this.energyPerTick
   }
 }

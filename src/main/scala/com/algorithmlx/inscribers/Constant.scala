@@ -4,5 +4,5 @@ import org.apache.logging.log4j.{LogManager, Logger}
 
 object Constant {
   val LOGGER: Logger = LogManager.getLogger("Inscribers")
-  val ModId = "inscribers"
+  final val ModId = "inscribers"
 }
