@@ -7,6 +7,7 @@ import com.tterrag.registrate.Registrate
 import com.tterrag.registrate.util.entry._
 import net.minecraft.item.{BlockItem, ItemGroup, ItemStack}
 import net.minecraft.item.crafting.IRecipeSerializer
+import net.minecraft.tileentity.TileEntity
 import net.minecraftforge.common.ToolType
 import net.minecraftforge.fml.RegistryObject
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
@@ -30,6 +31,7 @@ object Register {
       .build()
     .register()
   val INSCRIBER_ITEM: ItemEntry[BlockItem] = ItemEntry.cast(INSCRIBER_BLOCK.getSibling(ForgeRegistries.ITEMS))
+  val INSCRIBER_BLOCK_ENTITY: TileEntityEntry[TileEntity] = TileEntityEntry.cast(INSCRIBER_BLOCK.getSibling(ForgeRegistries.TILE_ENTITIES))
 
   def init(): Unit = {
     val bus = FMLJavaModLoadingContext.get().getModEventBus

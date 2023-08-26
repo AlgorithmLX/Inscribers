@@ -8,7 +8,7 @@ import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.util.LazyOptional
 
 class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends TileEntity(`type`) with ITickableTileEntity {
-  val energy: InscribersEnergyStorage = new InscribersEnergyStorage(InscribersConfig.INSCRIBER_CAPACITY.get(), ()=>{})
+  val energy: InscribersEnergyStorage = new InscribersEnergyStorage(InscribersConfig.INSCRIBER_CAPACITY.get(), ()=> {})
 
   override def tick(): Unit = {
 
