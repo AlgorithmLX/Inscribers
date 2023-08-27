@@ -23,17 +23,18 @@ class InscriberSerializer extends ForgeRegistryEntry[IRecipeSerializer[_]] with 
     val time: Int = JSONUtils.getAsInt(jsonObject, "time", 400)
     val energy: Int = JSONUtils.getAsInt(jsonObject, "energy", 1000)
 
-    this.getSerial.invoke(p_199425_1_, ingredient, itemStack, time, energy)
+    this.getSerial.apply(p_199425_1_, ingredient, itemStack, time, energy)
   }
 
-  def getSerial: Serializer = (reloc, ingredient, result, time, energy) => new InscriberRecipe(reloc, ingredient, result, time, energy)
+  def getSerial: (ResourceLocation, Ingredient, ItemStack, Int, Int) => InscriberRecipe =
+    (reloc, ingredient, result, time, energy) => new InscriberRecipe(reloc, ingredient, result, time, energy)
 
   override def fromNetwork(resourceLocation : ResourceLocation, byteBuf : PacketBuffer): InscriberRecipe = {
     val ingredient = Ingredient.fromNetwork(byteBuf)
     val itemStack = byteBuf.readItem()
     val time = byteBuf.readInt()
     val energy = byteBuf.readInt()
-    this.getSerial.invoke(resourceLocation, ingredient, itemStack, time, energy)
+    this.getSerial.apply(resourceLocation, ingredient, itemStack, time, energy)
   }
 
   override def toNetwork(byteBuf : PacketBuffer, value : InscriberRecipe): Unit = {
@@ -41,10 +42,5 @@ class InscriberSerializer extends ForgeRegistryEntry[IRecipeSerializer[_]] with 
     byteBuf.writeItem(value.getResultItem)
     byteBuf.writeInt(value.getTime)
     byteBuf.writeInt(value.getEnergyCount)
-  }
-
-  @FunctionalInterface
-  trait Serializer {
-    def invoke(id: ResourceLocation, ingredient: Ingredient, result: ItemStack, time: Int, energy: Int): InscriberRecipe
   }
 }

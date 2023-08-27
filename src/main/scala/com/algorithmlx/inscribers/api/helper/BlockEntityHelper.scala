@@ -5,6 +5,8 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
+// Author: BlakeBr0 (https://github.com/BlakeBr0)
+// Translate to Scala: AlgorithmLX
 object BlockEntityHelper {
   def playerDispatch(blockEntity: TileEntity): Unit = {
     val level = blockEntity.getLevel

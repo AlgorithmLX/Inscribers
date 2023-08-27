@@ -32,7 +32,6 @@ abstract class ContainerBlockEntity(blockEntityType: TileEntityType[_]) extends 
   override def save(tag : CompoundNBT): CompoundNBT = {
     super.save(tag)
     tag.merge(this.getInv().serializeNBT())
-    tag
   }
 
   override def getCapability[T](cap: Capability[T], side: Direction): LazyOptional[T] = {

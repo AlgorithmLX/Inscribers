@@ -110,18 +110,31 @@ configure<MixinExtension> {
 repositories {
     mavenCentral()
     maven("https://maven.tterrag.com/")
+    maven("https://modmaven.dev")
+    maven("https://maven.shedaniel.me/")
+    maven("https://maven.architectury.dev/")
+    maven("https://maven.blamejared.com/")
 }
 
 dependencies {
     minecraft("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
     val shadow = configurations["shadow"]
+    val registrate_version: String by project
+    val registrate_range: String by project
+    val scala_version: String by project
+    val rei_version: String by project
+    val jei_version: String by project
 
-    implementation(fg.deobf("com.tterrag.registrate:Registrate:MC1.16.5-1.0.10"))
-    jarJar(group = "com.tterrag.registrate", name = "Registrate", version = "[MC1.16.5,MC1.17)")
+    compileOnly(fg.deobf("com.tterrag.registrate:Registrate:MC${minecraft_version}-${registrate_version}"))
+    jarJar(group = "com.tterrag.registrate", name = "Registrate", version = "[MC${minecraft_version},MC${registrate_range})")
 
-    shadow("org.scala-lang:scala-library:2.13.11")
-    shadow("org.scala-lang:scala-reflect:2.13.11")
+    shadow("org.scala-lang:scala-library:${scala_version}")
+    shadow("org.scala-lang:scala-reflect:${scala_version}")
+
+    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api"))
+    compileOnly(fg.deobf("me.shedaniel:RoughlyEnoughItems-api-forge:${rei_version}"))
+    compileOnly(fg.deobf("me.shedaniel:RoughlyEnoughItems-default-plugin-forge:${rei_version}"))
 
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 }
