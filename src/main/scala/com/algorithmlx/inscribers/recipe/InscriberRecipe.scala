@@ -1,7 +1,7 @@
 package com.algorithmlx.inscribers.recipe
 
 import com.algorithmlx.inscribers.api.helper.RecipeHelper
-import com.algorithmlx.inscribers.init.Register
+import com.algorithmlx.inscribers.init.{InscribersRecipeTypes, Register}
 import net.minecraft.inventory.IInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.{IRecipe, IRecipeSerializer, IRecipeType, Ingredient}
@@ -18,7 +18,7 @@ class InscriberRecipe(
   energyPerTick: Int
 ) extends RecipeHelper {
   def this(id: ResourceLocation, ingredient: Ingredient, result: ItemStack, time: Int, energyPerTick: Int) {
-    this(CastRecipeType.invoke("inscriber"), id, ingredient, result, time, energyPerTick)
+    this(InscribersRecipeTypes.inscriberRecipe, id, ingredient, result, time, energyPerTick)
   }
 
   def getIngredient: Ingredient = {
