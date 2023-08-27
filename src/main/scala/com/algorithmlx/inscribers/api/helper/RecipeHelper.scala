@@ -24,7 +24,7 @@ trait RecipeHelper extends IRecipe[IInventory] {
 
   def matches(handler: IItemHandler, startIndex: Int, finishIndex: Int): Boolean = {
     val inputs: NonNullList[ItemStack] = NonNullList.create()
-    // analog on java: for(int i = 0; i < finishIndex; i++)
+    // analog on java: for (int i = 0; i < finishIndex; i++)
     // analog on kotlin: for (i in 0 until finishIndex)
     var i = startIndex
 
