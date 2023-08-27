@@ -26,9 +26,7 @@ class InscribersJEIPlugin extends IModPlugin {
   override def registerRecipes(registration: IRecipeRegistration): Unit = {
     if (DistHelper.isLogicalClient) {
       val level = Minecraft.getInstance().level
-
       if (level == null) return
-
       val recipeManager = level.getRecipeManager
 
       registration.addRecipes(recipeManager.byType(InscribersRecipeTypes.inscriberRecipe).values(), reloc("inscriber"))
