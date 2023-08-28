@@ -125,6 +125,7 @@ dependencies {
     val scala_version: String by project
     val rei_version: String by project
     val jei_version: String by project
+    val architectury_version: String by project
     val craftTweakerVersion: String by project
 
     compileOnly(fg.deobf("com.tterrag.registrate:Registrate:MC${minecraft_version}-${registrate_version}"))
@@ -133,10 +134,8 @@ dependencies {
     shadow("org.scala-lang:scala-library:${scala_version}")
     shadow("org.scala-lang:scala-reflect:${scala_version}")
 
-    compileOnly(fg.deobf("com.blamejared.crafttwealer:CraftTweaker-${minecraft_version}:${craftTweakerVersion}"))
+    compileOnly(fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${craftTweakerVersion}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api"))
-    compileOnly(fg.deobf("me.shedaniel:RoughlyEnoughItems-api-forge:${rei_version}"))
-    compileOnly(fg.deobf("me.shedaniel:RoughlyEnoughItems-default-plugin-forge:${rei_version}"))
 
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 }
