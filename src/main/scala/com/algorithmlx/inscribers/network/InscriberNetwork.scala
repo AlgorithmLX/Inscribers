@@ -11,12 +11,14 @@ object InscriberNetwork {
   private val version = "1.0"
 
   def messageRegister(): Unit = this.synchronized {
-    this.simpleChannel = NetworkRegistry.newSimpleChannel(
+    val localChannel = NetworkRegistry.newSimpleChannel(
       reloc("network"),
       () => version,
       obj => version.equals(obj),
       obj => version.equals(obj)
     )
+
+    this.simpleChannel = localChannel
   }
 
   def sendToServer[MSG](message: MSG): Unit = simpleChannel.sendToServer(message)

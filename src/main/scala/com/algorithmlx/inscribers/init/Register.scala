@@ -2,13 +2,22 @@ package com.algorithmlx.inscribers.init
 
 import com.algorithmlx.inscribers.Constant
 import com.algorithmlx.inscribers.block._
+import com.algorithmlx.inscribers.client.screen.InscriberMenuScreen
+import com.algorithmlx.inscribers.menu.InscriberContainerMenu
 import com.algorithmlx.inscribers.recipe.InscriberSerializer
 import com.tterrag.registrate.Registrate
+import com.tterrag.registrate.builders.ContainerBuilder.{ForgeContainerFactory, ScreenFactory}
 import com.tterrag.registrate.util.entry._
+import net.minecraft.client.gui.screen.inventory.ChestScreen
+import net.minecraft.entity.player.PlayerInventory
+import net.minecraft.inventory.container.ContainerType
 import net.minecraft.item.{BlockItem, ItemGroup, ItemStack}
 import net.minecraft.item.crafting.IRecipeSerializer
+import net.minecraft.network.PacketBuffer
 import net.minecraft.tileentity.TileEntity
+import net.minecraft.util.text.ITextComponent
 import net.minecraftforge.common.ToolType
+import net.minecraftforge.common.extensions.IForgeContainerType
 import net.minecraftforge.fml.RegistryObject
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import net.minecraftforge.registries.{DeferredRegister, ForgeRegistries}
@@ -32,6 +41,20 @@ object Register {
     .register()
   val INSCRIBER_ITEM: ItemEntry[BlockItem] = ItemEntry.cast(INSCRIBER_BLOCK.getSibling(ForgeRegistries.ITEMS))
   val INSCRIBER_BLOCK_ENTITY: TileEntityEntry[TileEntity] = TileEntityEntry.cast(INSCRIBER_BLOCK.getSibling(ForgeRegistries.TILE_ENTITIES))
+  val INSCRIBER_MENU_TYPE: ContainerEntry[InscriberContainerMenu] = REG.`object`("inscriber")
+    .container(
+      (
+        (menu: ContainerType[InscriberContainerMenu], windowId: Int, inv: PlayerInventory, pack: PacketBuffer) =>
+          new InscriberContainerMenu(menu, windowId, inv, pack)
+      ).asInstanceOf[ForgeContainerFactory[InscriberContainerMenu]],
+      () => (
+        (
+          menu: InscriberContainerMenu,
+          inventory: PlayerInventory,
+          component: ITextComponent
+        )=> new InscriberMenuScreen(menu,inventory,component)
+      ).asInstanceOf[ScreenFactory[InscriberContainerMenu, InscriberMenuScreen]]
+    ).register()
 
   def init(): Unit = {
     val bus = FMLJavaModLoadingContext.get().getModEventBus

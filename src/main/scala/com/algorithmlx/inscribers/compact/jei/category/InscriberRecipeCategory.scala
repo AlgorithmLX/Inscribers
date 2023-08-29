@@ -36,6 +36,11 @@ class InscriberRecipeCategory(guiHelper: IGuiHelper) extends IRecipeCategory[Ins
   }
 
   override def setRecipe(recipeLayout: IRecipeLayout, recipe: InscriberRecipe, ingredients: IIngredients): Unit = {
+    val stackGroup = recipeLayout.getItemStacks
+    val inputs = ingredients.getInputs(VanillaTypes.ITEM)
+    val outputs = ingredients.getOutputs(VanillaTypes.ITEM).get(0)
 
+    stackGroup.init(0, false, 46, 146)
+    stackGroup.set(0, outputs)
   }
 }

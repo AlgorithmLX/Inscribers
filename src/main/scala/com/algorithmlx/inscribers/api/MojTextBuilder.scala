@@ -4,7 +4,7 @@ import com.algorithmlx.inscribers.Constant
 import net.minecraft.util.text.{ITextComponent, KeybindTextComponent, ScoreTextComponent, SelectorTextComponent, StringTextComponent, TranslationTextComponent}
 
 object MojTextBuilder {
-  def screen(context: String): ITextComponent = {
+  def menu(context: String): ITextComponent = {
     translate("menu", context)
   }
 

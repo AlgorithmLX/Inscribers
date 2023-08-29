@@ -9,13 +9,13 @@ import com.blamejared.crafttweaker.api.annotations.ZenRegister
 import com.blamejared.crafttweaker.api.item.IIngredient
 import com.blamejared.crafttweaker.api.managers.IRecipeManager
 import com.blamejared.crafttweaker.api.recipes.IRecipeHandler
-import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe
+import com.blamejared.crafttweaker.impl.actions.recipes.{ActionAddRecipe, ActionRemoveRecipe}
 import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.{IRecipe, IRecipeType}
 import org.openzen.zencode.java.ZenCodeType
 
 @IRecipeHandler.For(classOf[InscriberRecipe])
-@ZenCodeType.Name(s"mods.${Constant.ModId}.Inscriber")
+@ZenCodeType.Name(s"mods.${Constant.ModId}.InscriberRecipe")
 @ZenRegister
 class InscriberCraftTweakerRecipe extends IRecipeManager with IRecipeHandler[InscriberRecipe] {
   @ZenCodeType.Method
@@ -28,7 +28,19 @@ class InscriberCraftTweakerRecipe extends IRecipeManager with IRecipeHandler[Ins
     )))
   }
 
+  @ZenCodeType.Method
+  def removeWithId(id: String): Unit = {
+    val fixed = fixRecipeName(id)
+    val rl = reloc(fixed)
+
+    CraftTweakerAPI.apply(new ActionRemoveRecipe(this, {
+      case x: InscriberRecipe => x.getId == rl
+      case _ => false
+    }))
+  }
+
   override def getRecipeType: IRecipeType[_ <: IRecipe[_]] = InscribersRecipeTypes.inscriberRecipe
 
-  override def dumpToCommandString(manager: IRecipeManager, recipe: InscriberRecipe): String = manager.getCommandString + recipe.getId + recipe.result + recipe.getIngredients
+  override def dumpToCommandString(manager: IRecipeManager, recipe: InscriberRecipe): String =
+    manager.getCommandString + recipe.getId + recipe.result + recipe.getIngredients
 }

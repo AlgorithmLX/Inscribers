@@ -1,10 +1,11 @@
 package com.algorithmlx.inscribers.block
 
 import com.algorithmlx.inscribers.Constant
-import com.algorithmlx.inscribers.api.ContainerBlockEntity
+import com.algorithmlx.inscribers.api.{ContainerBlockEntity, MojTextBuilder}
 import com.algorithmlx.inscribers.api.handler.{SidedItemHandlerModifiable, StackHandler}
 import com.algorithmlx.inscribers.energy.InscribersEnergyStorage
-import com.algorithmlx.inscribers.init.{InscribersConfig, InscribersRecipeTypes}
+import com.algorithmlx.inscribers.init.{InscribersConfig, InscribersRecipeTypes, Register}
+import com.algorithmlx.inscribers.menu.InscriberContainerMenu
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
 import net.minecraft.entity.player.{PlayerEntity, PlayerInventory}
 import net.minecraft.inventory.container.{Container, INamedContainerProvider}
@@ -22,7 +23,7 @@ import scala.annotation.unused
 class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends ContainerBlockEntity(`type`) with ITickableTileEntity with INamedContainerProvider {
   // Finales
   private val energy: InscribersEnergyStorage = new InscribersEnergyStorage(InscribersConfig.INSCRIBER_CAPACITY.get(), () => {})
-  private val inventory = new StackHandler(33, () => this.changeX())
+  private val inventory = new StackHandler(32, () => this.changeX())
 
   private val energyLazy: LazyOptional[InscribersEnergyStorage] = LazyOptional.of(()=> this.getEnergy)
   private val inventoryCap: Array[LazyOptional[IItemHandlerModifiable]] = SidedItemHandlerModifiable.create(
@@ -61,13 +62,13 @@ class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends Container
         this.energy.extractEnergy(needsEnergy, simulate = false)
 
         if (this.progress >= resultTime) {
-          var i = 0
+          var i = 1
           val finalSlot = 32
           while (i < finalSlot) {
             this.inventory.extract(i, 1, simulate = false)
             i += 1
           }
-          this.inventory.setStackInSlot(32, this.recipe.result(this.inventory))
+          this.inventory.setStackInSlot(0, this.recipe.result(this.inventory))
           this.progress = 0
           this.changeX()
         }
@@ -75,9 +76,10 @@ class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends Container
     }
   }
 
-  override def getDisplayName: ITextComponent = new TranslationTextComponent(s"menu.${Constant.ModId}.inscriber")
+  override def getDisplayName: ITextComponent = MojTextBuilder.menu("inscriber")
 
-  override def createMenu(windowId : Int, inventory : PlayerInventory, player : PlayerEntity): Container = ???
+  override def createMenu(windowId : Int, inventory : PlayerInventory, player : PlayerEntity): Container =
+    Register.INSCRIBER_MENU_TYPE.create(windowId, inventory)
 
   override def getCapability[T](cap: Capability[T], side: Direction): LazyOptional[T] = {
     if (cap == CapabilityEnergy.ENERGY) return energyLazy.cast()

@@ -11,5 +11,4 @@ class Inscriber(properties: Properties) extends Block(properties) {
   override def hasTileEntity(state: BlockState): Boolean = true
 
   override def createTileEntity(state: BlockState, world: IBlockReader): TileEntity = new InscriberBlockEntity(Register.INSCRIBER_BLOCK_ENTITY.get())
-
 }
