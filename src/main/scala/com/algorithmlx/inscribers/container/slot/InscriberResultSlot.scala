@@ -9,12 +9,12 @@ import net.minecraft.util.NonNullList
 import net.minecraftforge.common.ForgeHooks
 
 class InscriberResultSlot(
-   private val containerMenu: Container,
-   private val containerGlob: IInventory,
-   container: IInventory,
-   index: Int,
-   x: Int,
-   y: Int
+  private val containerMenu: Container,
+  private val containerGlob: IInventory,
+  container: IInventory,
+  index: Int,
+  x: Int,
+  y: Int
 ) extends Slot(container, index, x, y) {
   override def mayPlace(p_75214_1_ : ItemStack): Boolean = false
 
@@ -50,4 +50,5 @@ class InscriberResultSlot(
 
     stack
   }
+
 }
