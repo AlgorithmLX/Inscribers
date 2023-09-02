@@ -29,6 +29,11 @@ class InscriberCraftTweakerRecipe extends IRecipeManager with IRecipeHandler[Ins
   }
 
   @ZenCodeType.Method
+  def addRecipe(id: String, output: ItemStack, inputs: IIngredient): Unit = {
+    this.addRecipe(id, 400, 1000, output, inputs)
+  }
+
+  @ZenCodeType.Method
   def removeWithId(id: String): Unit = {
     val fixed = fixRecipeName(id)
     val rl = reloc(fixed)

@@ -24,6 +24,7 @@ class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends Container
   // Finales
   private val energy: InscribersEnergyStorage = new InscribersEnergyStorage(InscribersConfig.INSCRIBER_CAPACITY.get(), () => {})
   private val inventory = new StackHandler(32, () => this.changeX())
+  protected var isWorking = false;
 
   private val energyLazy: LazyOptional[InscribersEnergyStorage] = LazyOptional.of(()=> this.getEnergy)
   private val inventoryCap: Array[LazyOptional[IItemHandlerModifiable]] = SidedItemHandlerModifiable.create(
@@ -57,6 +58,7 @@ class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends Container
     if (this.recipe != null) {
       val needsEnergy = this.recipe.getEnergyCount // Needs energy per tick
       val resultTime = this.recipe.getTime
+      this.isWorking = true
       if (this.energy.getEnergyStored >= needsEnergy) {
         this.progress += 1
         this.energy.extractEnergy(needsEnergy, simulate = false)
@@ -70,6 +72,7 @@ class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends Container
           }
           this.inventory.setStackInSlot(0, this.recipe.result(this.inventory))
           this.progress = 0
+          this.isWorking = false
           this.changeX()
         }
       }

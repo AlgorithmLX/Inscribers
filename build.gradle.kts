@@ -114,6 +114,7 @@ repositories {
     maven("https://modmaven.dev")
     maven("https://maven.shedaniel.me/")
     maven("https://maven.architectury.dev/")
+    maven("https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/")
 }
 
 dependencies {
@@ -136,6 +137,8 @@ dependencies {
 
     compileOnly(fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${craftTweakerVersion}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api"))
+    compileOnly(fg.deobf("software.bernie.geckolib:geckolib-forge-1.16.5:3.0.106"))
+    runtimeOnly(fg.deobf("software.bernie.geckolib:geckolib-forge-1.16.5:3.0.106"))
 
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 }
