@@ -4,7 +4,7 @@ import com.algorithmlx.inscribers.api.handler.{StackHandler, StackHandlerSlot}
 import com.algorithmlx.inscribers.block.InscriberBlockEntity
 import com.algorithmlx.inscribers.container.InscriberCraftingContainer
 import com.algorithmlx.inscribers.container.slot.InscriberResultSlot
-import com.algorithmlx.inscribers.init.{InscribersRecipeTypes, Register}
+import com.algorithmlx.inscribers.init.registry.{InscribersRecipeTypes, Register}
 import net.minecraft.entity.player.{PlayerEntity, PlayerInventory}
 import net.minecraft.inventory.{CraftResultInventory, IInventory}
 import net.minecraft.inventory.container.{Container, ContainerType, Slot}
@@ -16,6 +16,7 @@ import net.minecraft.world.World
 import net.minecraftforge.items.wrapper.InvWrapper
 import net.minecraftforge.items.{IItemHandler, SlotItemHandler}
 
+//noinspection DuplicatedCode
 class InscriberContainerMenu(
   `type`: ContainerType[_],
   windowId: Int,
@@ -43,19 +44,12 @@ class InscriberContainerMenu(
 
   this.addSlot(new InscriberResultSlot(this, craftInventory, this.result, 0, 79, 163))
 
-  var index = 1
-  var i = 0
-  var j = 0
-
-  while (index < 32) {
-    while (i < 6) {
-      while (j < 6) {
+  for (index <- 1 until 36) {
+    for (i <- 0 until 6) {
+      for (j <- 0 until 6) {
         this.addSlot(new StackHandlerSlot(this.blockEntity.getInv(), index, 34 + i * 18, 17 + j * 18))
-        j += 1
       }
-      i += 1
     }
-    index += 1
   }
 
   this.slotsChanged(craftInventory)
@@ -83,15 +77,11 @@ class InscriberContainerMenu(
   def addSlotRange(handler: IItemHandler, index: Int, x: Int, y: Int, amount: Int, dx: Int): Int = {
     var index0 = index
     var x0 = x
-    var i = 0
 
-    while (i < amount) {
-      addSlot(new SlotItemHandler(handler, index0, x0, y))
-
+    for (_ <- 0 until amount) {
+      this.addSlot(new SlotItemHandler(handler, index0, x0, y))
       x0 += dx
       index0 += 1
-
-      i += 1
     }
 
     index0
@@ -100,14 +90,19 @@ class InscriberContainerMenu(
   def addSlotBox(handler: IItemHandler, index: Int, x: Int, y: Int, horAmount: Int, dx: Int, verAmount: Int, dy: Int): Unit = {
     var index0 = index
     var y0 = y
-    var i = 0
+//    var i = 0
+//
+//    while (i < verAmount) {
+//      index0 = addSlotRange(handler, index0, x, y0, horAmount, dx)
+//
+//      y0 += dy
+//
+//      i += 1
+//    }
 
-    while (i < verAmount) {
-      index0 = addSlotRange(handler, index0, x, y0, horAmount, dx)
-
+    for (_ <- 0 until verAmount) {
+      index0 = this.addSlotRange(handler, index0, x, y0, horAmount, dx)
       y0 += dy
-
-      i += 1
     }
   }
 

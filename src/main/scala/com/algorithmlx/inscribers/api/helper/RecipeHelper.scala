@@ -9,8 +9,6 @@ import net.minecraftforge.common.util.RecipeMatcher
 import net.minecraftforge.items.IItemHandler
 import net.minecraftforge.items.wrapper.InvWrapper
 
-// Author: BlakeBr0 (https://github.com/BlakeBr0)
-// Translate to Scala: AlgorithmLX
 trait RecipeHelper extends IRecipe[IInventory] {
   override def assemble(inventory: IInventory): ItemStack = this.result(new InvWrapper(inventory))
 

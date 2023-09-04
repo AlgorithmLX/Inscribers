@@ -2,7 +2,7 @@ package com.algorithmlx.inscribers.compact.crafttweaker
 
 import com.algorithmlx.inscribers.Constant
 import com.algorithmlx.inscribers.Constant.reloc
-import com.algorithmlx.inscribers.init.InscribersRecipeTypes
+import com.algorithmlx.inscribers.init.registry.InscribersRecipeTypes
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
 import com.blamejared.crafttweaker.api.CraftTweakerAPI
 import com.blamejared.crafttweaker.api.annotations.ZenRegister

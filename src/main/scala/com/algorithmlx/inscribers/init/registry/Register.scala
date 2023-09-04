@@ -1,4 +1,4 @@
-package com.algorithmlx.inscribers.init
+package com.algorithmlx.inscribers.init.registry
 
 import com.algorithmlx.inscribers.Constant
 import com.algorithmlx.inscribers.block._
@@ -8,16 +8,14 @@ import com.algorithmlx.inscribers.recipe.InscriberSerializer
 import com.tterrag.registrate.Registrate
 import com.tterrag.registrate.builders.ContainerBuilder.{ForgeContainerFactory, ScreenFactory}
 import com.tterrag.registrate.util.entry._
-import net.minecraft.client.gui.screen.inventory.ChestScreen
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.container.ContainerType
-import net.minecraft.item.{BlockItem, ItemGroup, ItemStack}
 import net.minecraft.item.crafting.IRecipeSerializer
+import net.minecraft.item.{BlockItem, ItemGroup, ItemStack}
 import net.minecraft.network.PacketBuffer
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.text.ITextComponent
 import net.minecraftforge.common.ToolType
-import net.minecraftforge.common.extensions.IForgeContainerType
 import net.minecraftforge.fml.RegistryObject
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import net.minecraftforge.registries.{DeferredRegister, ForgeRegistries}

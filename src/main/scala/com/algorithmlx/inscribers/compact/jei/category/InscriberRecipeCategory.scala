@@ -2,7 +2,7 @@ package com.algorithmlx.inscribers.compact.jei.category
 
 import com.algorithmlx.inscribers.Constant
 import com.algorithmlx.inscribers.Constant.reloc
-import com.algorithmlx.inscribers.init.Register
+import com.algorithmlx.inscribers.init.registry.Register
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
 import mezz.jei.api.constants.VanillaTypes
 import mezz.jei.api.gui.IRecipeLayout
@@ -40,7 +40,18 @@ class InscriberRecipeCategory(guiHelper: IGuiHelper) extends IRecipeCategory[Ins
     val inputs = ingredients.getInputs(VanillaTypes.ITEM)
     val outputs = ingredients.getOutputs(VanillaTypes.ITEM).get(0)
 
+    var indexStack = 0
+
     stackGroup.init(0, false, 46, 146)
     stackGroup.set(0, outputs)
+    for (index <- 1 until 32) {
+      for (i <- 0 until 6) {
+        for (j <- 0 until 6) {
+          stackGroup.init(index, true, i * 18, j * 18)
+        }
+      }
+      stackGroup.set(index, inputs.get(indexStack))
+      indexStack += 1
+    }
   }
 }

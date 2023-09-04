@@ -1,7 +1,6 @@
-package com.algorithmlx.inscribers.init
+package com.algorithmlx.inscribers.init.registry
 
 import com.algorithmlx.inscribers.recipe.{CastRecipeType, InscriberRecipe}
-import net.minecraft.item.crafting.IRecipeType
 
 object InscribersRecipeTypes {
   val inscriberRecipe = CastRecipeType.invoke[InscriberRecipe]("inscriber")

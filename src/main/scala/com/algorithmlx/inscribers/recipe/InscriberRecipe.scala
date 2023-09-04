@@ -1,7 +1,7 @@
 package com.algorithmlx.inscribers.recipe
 
 import com.algorithmlx.inscribers.api.helper.RecipeHelper
-import com.algorithmlx.inscribers.init.{InscribersRecipeTypes, Register}
+import com.algorithmlx.inscribers.init.registry.{InscribersRecipeTypes, Register}
 import net.minecraft.inventory.IInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.{IRecipe, IRecipeSerializer, IRecipeType, Ingredient}

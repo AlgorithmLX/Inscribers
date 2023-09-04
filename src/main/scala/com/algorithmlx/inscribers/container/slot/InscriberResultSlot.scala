@@ -1,6 +1,6 @@
 package com.algorithmlx.inscribers.container.slot
 
-import com.algorithmlx.inscribers.init.InscribersRecipeTypes
+import com.algorithmlx.inscribers.init.registry.InscribersRecipeTypes
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.IInventory
 import net.minecraft.inventory.container.{Container, Slot}

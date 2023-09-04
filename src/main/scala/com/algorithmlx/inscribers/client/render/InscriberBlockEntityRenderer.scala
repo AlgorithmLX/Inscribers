@@ -2,28 +2,53 @@ package com.algorithmlx.inscribers.client.render
 
 import com.algorithmlx.inscribers.Constant.reloc
 import com.algorithmlx.inscribers.block.InscriberBlockEntity
-import com.algorithmlx.inscribers.client.render.InscriberBlockEntityRenderer.laser
 import com.mojang.blaze3d.matrix.MatrixStack
+import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.IRenderTypeBuffer
-import net.minecraft.client.renderer.model.RenderMaterial
-import net.minecraft.client.renderer.texture.AtlasTexture
-import net.minecraft.client.renderer.tileentity.{TileEntityRenderer, TileEntityRendererDispatcher}
+import net.minecraft.client.renderer.model.{ItemCameraTransforms, RenderMaterial}
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher
 import net.minecraft.inventory.container.PlayerContainer
+import net.minecraft.item.{BlockItem, ItemStack}
 import net.minecraft.util.ResourceLocation
+import net.minecraftforge.client.model.animation.TileEntityRendererAnimation
 
-class InscriberBlockEntityRenderer(ctx: TileEntityRendererDispatcher) extends TileEntityRenderer[InscriberBlockEntity](ctx) {
+class InscriberBlockEntityRenderer(ctx: TileEntityRendererDispatcher) extends TileEntityRendererAnimation[InscriberBlockEntity](ctx) {
   override def render(
     blockEntity : InscriberBlockEntity,
     partialTick : Float,
     poseStack : MatrixStack,
     buf : IRenderTypeBuffer,
-    hz : Int,
-    hz0 : Int
+    light : Int,
+    otherLight : Int
   ): Unit = {
-    super.render(blockEntity, partialTick, poseStack, buf, hz, hz0)
+    val inv = blockEntity.getInv()
+
+    for (i <- 1 until 36) {
+      val stack = inv.getStackInSlot(i)
+      if (!stack.isEmpty) {
+        for (i <- 0 until 6) {
+          for (j <- 0 until 6) {
+//            this.renderItem(poseStack, stack, )
+          }
+        }
+      }
+    }
+
+    super.render(blockEntity, partialTick, poseStack, buf, light, otherLight)
+  }
+
+  // FUCKED 36 SLOTS
+  private def renderItem(poseStack: MatrixStack, stack: ItemStack, x: Double, z: Double, buf: IRenderTypeBuffer, light: Int, otherLight: Int): Unit = {
+    val minisruft = Minecraft.getInstance()
+    poseStack.pushPose()
+    poseStack.translate(x, 4.8, z)
+    val scale: Float = if (stack.getItem.isInstanceOf[BlockItem]) 1F else 0.75F
+    poseStack.scale(scale, scale, scale)
+    minisruft.getItemRenderer.renderStatic(stack, ItemCameraTransforms.TransformType.GROUND, light, otherLight, poseStack, buf)
+    poseStack.popPose()
   }
 }
-
+// Animations is not available
 object InscriberBlockEntityRenderer {
   val laser: RenderMaterial = makeMCMaterial("block/beacon")
   val laserCore: RenderMaterial = makeMCMaterial("block/gold_block")

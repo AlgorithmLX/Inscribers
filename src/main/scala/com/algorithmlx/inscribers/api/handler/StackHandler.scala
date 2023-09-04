@@ -8,8 +8,6 @@ import org.apache.commons.lang3.ArrayUtils
 
 import java.util
 
-// Author: BlakeBr0 (https://github.com/BlakeBr0)
-// Translate to Scala: AlgorithmLX
 class StackHandler(size: Int, changeX: Runnable) extends ItemStackHandler(size) {
   private var slotSize: util.Map[Int, Int] = new util.HashMap()
   private var validator: (Int, ItemStack) => Boolean = _

@@ -4,7 +4,8 @@ import com.algorithmlx.inscribers.Constant
 import com.algorithmlx.inscribers.api.{ContainerBlockEntity, MojTextBuilder}
 import com.algorithmlx.inscribers.api.handler.{SidedItemHandlerModifiable, StackHandler}
 import com.algorithmlx.inscribers.energy.InscribersEnergyStorage
-import com.algorithmlx.inscribers.init.{InscribersConfig, InscribersRecipeTypes, Register}
+import com.algorithmlx.inscribers.init.config.InscribersConfig
+import com.algorithmlx.inscribers.init.registry.{InscribersRecipeTypes, Register}
 import com.algorithmlx.inscribers.menu.InscriberContainerMenu
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
 import net.minecraft.entity.player.{PlayerEntity, PlayerInventory}

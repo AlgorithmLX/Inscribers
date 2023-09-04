@@ -1,4 +1,4 @@
-package com.algorithmlx.inscribers.init
+package com.algorithmlx.inscribers.init.config
 
 import net.minecraftforge.common.ForgeConfigSpec
 

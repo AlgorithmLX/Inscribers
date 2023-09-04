@@ -5,8 +5,6 @@ import net.minecraft.util.Direction
 import net.minecraftforge.common.util.LazyOptional
 import net.minecraftforge.items.IItemHandlerModifiable
 
-// Author: BlakeBr0 (https://github.com/BlakeBr0)
-// Translate to Scala: AlgorithmLX
 object SidedItemHandlerModifiable {
   def create(
               stackHandler: StackHandler,

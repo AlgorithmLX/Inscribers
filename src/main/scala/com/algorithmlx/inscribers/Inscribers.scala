@@ -2,7 +2,8 @@ package com.algorithmlx.inscribers
 
 import com.algorithmlx.inscribers.Constant._
 import com.algorithmlx.inscribers.compact.CompactInitializer
-import com.algorithmlx.inscribers.init.{InscribersConfig, Register}
+import com.algorithmlx.inscribers.init.config.InscribersConfig
+import com.algorithmlx.inscribers.init.registry.Register
 import com.algorithmlx.inscribers.network.InscriberNetwork
 import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.common.Mod

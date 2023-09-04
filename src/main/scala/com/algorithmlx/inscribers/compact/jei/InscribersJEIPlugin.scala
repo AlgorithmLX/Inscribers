@@ -3,7 +3,7 @@ package com.algorithmlx.inscribers.compact.jei
 import com.algorithmlx.inscribers.Constant.reloc
 import com.algorithmlx.inscribers.api.DistHelper
 import com.algorithmlx.inscribers.compact.jei.category.InscriberRecipeCategory
-import com.algorithmlx.inscribers.init.{InscribersRecipeTypes, Register}
+import com.algorithmlx.inscribers.init.registry.{InscribersRecipeTypes, Register}
 import mezz.jei.api.registration.{IRecipeCatalystRegistration, IRecipeCategoryRegistration, IRecipeRegistration}
 import mezz.jei.api.{IModPlugin, JeiPlugin}
 import net.minecraft.client.Minecraft
