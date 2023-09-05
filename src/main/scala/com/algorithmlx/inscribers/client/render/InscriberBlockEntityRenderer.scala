@@ -26,14 +26,37 @@ class InscriberBlockEntityRenderer(ctx: TileEntityRendererDispatcher) extends Ti
     for (i <- 1 until 36) {
       val stack = inv.getStackInSlot(i)
       if (!stack.isEmpty) {
-        for (i <- 0 until 6) {
-          for (j <- 0 until 6) {
-//            this.renderItem(poseStack, stack, )
+        for (i <- 0 until 5) {
+          for (j <- 0 until 5) {
+            this.renderItem(poseStack, stack, 11.25 - 1.5 * i, 11.3 - 1.5 * j, buf, light, otherLight)
           }
         }
       }
     }
 
+    val resultStack = inv.getStackInSlot(0)
+
+    if (!resultStack.isEmpty) {
+      val minisruft = Minecraft.getInstance()
+      val scale: Float = if (resultStack.getItem.isInstanceOf[BlockItem]) 2F else 1.75F
+
+      for (i <- 1 until 36) {
+        val stacks = inv.getStackInSlot(i)
+        if (stacks.isEmpty) {
+          poseStack.pushPose()
+          poseStack.translate(7, 4.8, 7)
+          poseStack.scale(scale, scale, scale)
+          minisruft.getItemRenderer.renderStatic(resultStack, ItemCameraTransforms.TransformType.GROUND, light, otherLight, poseStack, buf)
+          poseStack.popPose()
+        } else {
+          poseStack.pushPose()
+          poseStack.translate(7, 4, 7)
+          poseStack.scale(scale, scale, scale)
+          minisruft.getItemRenderer.renderStatic(resultStack, ItemCameraTransforms.TransformType.GROUND, light, otherLight, poseStack, buf)
+          poseStack.popPose()
+        }
+      }
+    }
     super.render(blockEntity, partialTick, poseStack, buf, light, otherLight)
   }
 

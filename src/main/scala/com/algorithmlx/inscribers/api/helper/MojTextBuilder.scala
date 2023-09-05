@@ -1,7 +1,7 @@
-package com.algorithmlx.inscribers.api
+package com.algorithmlx.inscribers.api.helper
 
 import com.algorithmlx.inscribers.Constant
-import net.minecraft.util.text.{ITextComponent, KeybindTextComponent, ScoreTextComponent, SelectorTextComponent, StringTextComponent, TranslationTextComponent}
+import net.minecraft.util.text._
 
 object MojTextBuilder {
   def menu(context: String): ITextComponent = {

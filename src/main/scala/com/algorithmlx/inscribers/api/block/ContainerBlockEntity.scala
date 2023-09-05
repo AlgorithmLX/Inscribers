@@ -1,4 +1,4 @@
-package com.algorithmlx.inscribers.api
+package com.algorithmlx.inscribers.api.block
 
 import com.algorithmlx.inscribers.api.handler.StackHandler
 import com.algorithmlx.inscribers.api.helper.BlockEntityHelper

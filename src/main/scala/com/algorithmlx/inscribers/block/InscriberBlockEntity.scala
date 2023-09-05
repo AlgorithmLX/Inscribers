@@ -1,8 +1,9 @@
 package com.algorithmlx.inscribers.block
 
 import com.algorithmlx.inscribers.Constant
-import com.algorithmlx.inscribers.api.{ContainerBlockEntity, MojTextBuilder}
+import com.algorithmlx.inscribers.api.block.ContainerBlockEntity
 import com.algorithmlx.inscribers.api.handler.{SidedItemHandlerModifiable, StackHandler}
+import com.algorithmlx.inscribers.api.helper.MojTextBuilder
 import com.algorithmlx.inscribers.energy.InscribersEnergyStorage
 import com.algorithmlx.inscribers.init.config.InscribersConfig
 import com.algorithmlx.inscribers.init.registry.{InscribersRecipeTypes, Register}

@@ -16,6 +16,7 @@ class InscriberMenuScreen(
   iTextComponent
 ) {
   override def init(): Unit = {
+//    this.addButton()
     super.init()
   }
 

@@ -1,4 +1,4 @@
-package com.algorithmlx.inscribers.api
+package com.algorithmlx.inscribers.api.helper
 
 import net.minecraft.world.World
 import net.minecraftforge.api.distmarker.Dist

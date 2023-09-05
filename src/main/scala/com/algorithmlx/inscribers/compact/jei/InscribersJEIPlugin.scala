@@ -1,7 +1,7 @@
 package com.algorithmlx.inscribers.compact.jei
 
 import com.algorithmlx.inscribers.Constant.reloc
-import com.algorithmlx.inscribers.api.DistHelper
+import com.algorithmlx.inscribers.api.helper.DistHelper
 import com.algorithmlx.inscribers.compact.jei.category.InscriberRecipeCategory
 import com.algorithmlx.inscribers.init.registry.{InscribersRecipeTypes, Register}
 import mezz.jei.api.registration.{IRecipeCatalystRegistration, IRecipeCategoryRegistration, IRecipeRegistration}
