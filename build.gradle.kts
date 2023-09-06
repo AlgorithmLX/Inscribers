@@ -18,6 +18,7 @@ plugins {
     scala
     id("com.github.johnrengelman.shadow") version "8.+"
     id("net.minecraftforge.gradle") version "6.+"
+    id("org.parchmentmc.librarian.forgegradle") version "1.+"
 }
 
 apply(plugin = "org.spongepowered.mixin")
@@ -42,7 +43,10 @@ configurations {
 }
 
 configure<UserDevExtension> {
-    mappings("official", minecraft_version)
+    val mappingsChannel: String by project
+    val parchmentVersion: String? by project
+    if (mappingsChannel == "official") mappings(mappingsChannel, minecraft_version)
+    else mappings(mappingsChannel, "${parchmentVersion!!}-${minecraft_version}")
 
     accessTransformer(file("src/main/resources/META-INF/accesstransformer.cfg"))
 
@@ -124,9 +128,7 @@ dependencies {
     val registrate_version: String by project
     val registrate_range: String by project
     val scala_version: String by project
-    val rei_version: String by project
     val jei_version: String by project
-    val architectury_version: String by project
     val craftTweakerVersion: String by project
 
     compileOnly(fg.deobf("com.tterrag.registrate:Registrate:MC${minecraft_version}-${registrate_version}"))

@@ -9,6 +9,7 @@ import com.algorithmlx.inscribers.init.config.InscribersConfig
 import com.algorithmlx.inscribers.init.registry.{InscribersRecipeTypes, Register}
 import com.algorithmlx.inscribers.menu.InscriberContainerMenu
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
+import com.algorithmlx.inscribers.server.InscriberDirectionSettingsServer
 import net.minecraft.entity.player.{PlayerEntity, PlayerInventory}
 import net.minecraft.inventory.container.{Container, INamedContainerProvider}
 import net.minecraft.tileentity.{ITickableTileEntity, TileEntity, TileEntityType}
@@ -38,7 +39,7 @@ class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends Container
   // Changeable
   @unchecked @unused @deprecated // Temporarily disabled for realisation
   private val exitsSides: Array[Int] = Array[Int](0)
-  private var exitSide: Int = 0 // | 0 -> Down | 1 -> Up | 2 -> North | 3 -> South | 4 -> West | 5 -> East |
+
   private var progress: Int = _
   private var recipe: InscriberRecipe = _
 
@@ -119,12 +120,13 @@ class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends Container
     false
   }
 
+  /*
+  -------------------------------------------------------------------------
+  | 0 -> Down | 1 -> Up | 2 -> North | 3 -> South | 4 -> West | 5 -> East |
+  _________________________________________________________________________
+  */
   def getSide: Int = {
-    this.exitSide
-  }
-
-  def setSide(value: Int): Unit = {
-    this.exitSide = value
+    InscriberDirectionSettingsServer.getData
   }
 
   def getProgress: Int = {
