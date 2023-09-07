@@ -8,8 +8,10 @@ import mezz.jei.api.registration.{IRecipeCatalystRegistration, IRecipeCategoryRe
 import mezz.jei.api.{IModPlugin, JeiPlugin}
 import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
+import net.minecraft.item.crafting.IRecipeType
 import net.minecraft.util.ResourceLocation
 
+//noinspection ScalaUnusedSymbol
 @JeiPlugin
 class InscribersJEIPlugin extends IModPlugin {
   override def getPluginUid: ResourceLocation = reloc("integration_jei")
@@ -28,8 +30,9 @@ class InscribersJEIPlugin extends IModPlugin {
       val level = Minecraft.getInstance().level
       if (level == null) return
       val recipeManager = level.getRecipeManager
+      val recipes = recipeManager.byType(InscribersRecipeTypes.inscriberRecipe)
 
-      registration.addRecipes(recipeManager.byType(InscribersRecipeTypes.inscriberRecipe).values(), reloc("inscriber"))
+      registration.addRecipes(recipes.values(), reloc("inscriber"))
     }
   }
 }

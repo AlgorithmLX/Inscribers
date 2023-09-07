@@ -2,22 +2,20 @@ package com.algorithmlx.inscribers.recipe
 
 import com.algorithmlx.inscribers.api.helper.RecipeHelper
 import com.algorithmlx.inscribers.init.registry.{InscribersRecipeTypes, Register}
-import net.minecraft.inventory.IInventory
 import net.minecraft.item.ItemStack
-import net.minecraft.item.crafting.{IRecipe, IRecipeSerializer, IRecipeType, Ingredient}
-import net.minecraft.util.{NonNullList, ResourceLocation}
-import net.minecraft.world.World
+import net.minecraft.item.crafting.{IRecipeSerializer, IRecipeType, Ingredient}
+import net.minecraft.util.ResourceLocation
 import net.minecraftforge.items.IItemHandler
 
 class InscriberRecipe(
-  recipeType: IRecipeType[InscriberRecipe],
-  id: ResourceLocation,
-  ingredient: Ingredient,
-  result: ItemStack,
-  time: Int,
-  energyPerTick: Int
+  val recipeType: IRecipeType[InscriberRecipe],
+  val id: ResourceLocation,
+  val ingredient: Ingredient,
+  val result: ItemStack,
+  val time: Int,
+  val energyPerTick: Int
 ) extends RecipeHelper {
-  def this(id: ResourceLocation, ingredient: Ingredient, result: ItemStack, time: Int, energyPerTick: Int) {
+  def this(id: ResourceLocation, ingredient: Ingredient, result: ItemStack, time: Int, energyPerTick: Int) = {
     this(InscribersRecipeTypes.inscriberRecipe, id, ingredient, result, time, energyPerTick)
   }
 

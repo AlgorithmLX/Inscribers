@@ -1,6 +1,5 @@
 package com.algorithmlx.inscribers.api.client
 
-import com.algorithmlx.inscribers.Constant
 import com.algorithmlx.inscribers.api.client.InscribersButtonAPI.getActivated
 import com.mojang.blaze3d.matrix.MatrixStack
 import com.mojang.blaze3d.systems.RenderSystem
@@ -10,8 +9,6 @@ import net.minecraft.client.gui.widget.button.Button.{IPressable, ITooltip}
 import net.minecraft.item.ItemStack
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.text.{ITextComponent, StringTextComponent}
-
-import scala.annotation.tailrec
 
 class InscribersButtonAPI private(
   private val x: Int,
@@ -27,25 +24,21 @@ class InscribersButtonAPI private(
   private val stackedTexture: Boolean,
   private val enableDoubleButton: Boolean
 ) extends Button(x, y, width, height, text, onPress, tooltip) {
-  private val emptyTooltip: ITooltip = (_, _, _, _) => {}
-  private val emptyReLoc = new ResourceLocation("")
-  private val emptyStack = ItemStack.EMPTY
-  private val emptyText = new StringTextComponent("")
 
   def this(x: Int, y: Int, width: Int, height: Int, id: Int, text: ITextComponent, onPress: IPressable, tooltip: ITooltip, reloc: ResourceLocation, enableDoubleButton: Boolean) = {
-    this(x, y, width, height, id, text, onPress, tooltip, reloc, this.emptyStack, false, enableDoubleButton)
+    this(x, y, width, height, id, text, onPress, tooltip, reloc, ItemStack.EMPTY, false, enableDoubleButton)
   }
 
   def this(x: Int, y: Int, width: Int, height: Int, id: Int, text: ITextComponent, onPress: IPressable, reloc: ResourceLocation) = {
-    this(x, y, width, height, id, text, onPress, this.emptyTooltip, reloc, true)
+    this(x, y, width, height, id, text, onPress, (_: Button, _: MatrixStack, _: Int, _: Int) => {}, reloc, true)
   }
 
   def this(x: Int, y: Int, width: Int, height: Int, id: Int, text: ITextComponent, onPress: IPressable, tooltip: ITooltip, stack: ItemStack, enableDoubleButton: Boolean) = {
-    this(x, y, width, height, id, text, onPress, tooltip, this.emptyReLoc, stack, true, enableDoubleButton)
+    this(x, y, width, height, id, text, onPress, tooltip, null, stack, true, enableDoubleButton)
   }
 
   def this(x: Int, y: Int, width: Int, height: Int, id: Int, text: ITextComponent, onPress: IPressable, stack: ItemStack, enableDoubleButton: Boolean) = {
-    this(x, y, width, height, id, text, onPress, this.emptyTooltip, stack, enableDoubleButton)
+    this(x, y, width, height, id, text, onPress, (_: Button, _: MatrixStack, _: Int, _: Int) => {}, stack, enableDoubleButton)
   }
 
   override def render(poseStack : MatrixStack, mouseX : Int, mouseY : Int, partialTick : Float): Unit = {
@@ -53,7 +46,7 @@ class InscribersButtonAPI private(
     val font = mc.font
 
     poseStack.pushPose()
-    if (this.text != null || this.text == this.emptyText)
+    if (this.text != null)
       font.draw(poseStack, this.text, this.x, this.y + this.height / 4F, 0xFFFFFF)
 
     if (!this.stackedTexture) {
@@ -105,7 +98,7 @@ object InscribersButtonAPI {
 
   def setActivated(value: Boolean, id: Int): Unit = {
     this.activated = value
-    this.id = id
+    this.setId(id)
   }
 
   def getId: Int = this.id

@@ -26,7 +26,7 @@ class InscriberContainerMenu(
   private val pos: BlockPos
 ) extends Container(`type`, windowId) {
   private val result: IInventory = new CraftResultInventory()
-  private val craftInventory: IInventory = new InscriberCraftingContainer(this, new InscriberBlockEntity(Register.INSCRIBER_BLOCK_ENTITY.get()).getInv(), 6)
+  private val craftInventory: IInventory = new InscriberCraftingContainer(this, new InscriberBlockEntity(Register.INSCRIBER_BLOCK_ENTITY.get()).getInv, 6)
   private val level: World = inventory.player.level
 
   def this(`type`: ContainerType[_], id: Int, inventory: PlayerInventory, pack: PacketBuffer) = {
@@ -45,7 +45,7 @@ class InscriberContainerMenu(
   for (index <- 1 until 36) {
     for (i <- 0 until 6) {
       for (j <- 0 until 6) {
-        this.addSlot(new StackHandlerSlot(new InscriberBlockEntity(Register.INSCRIBER_BLOCK_ENTITY.get()).getInv(), index, 34 + i * 18, 17 + j * 18))
+        this.addSlot(new StackHandlerSlot(new InscriberBlockEntity(Register.INSCRIBER_BLOCK_ENTITY.get()).getInv, index, 34 + i * 18, 17 + j * 18))
       }
     }
   }
@@ -101,5 +101,4 @@ class InscriberContainerMenu(
     topRowY0 += 58
     addSlotRange(playerInv, 0, leftColX, topRowY0, 9, 18)
   }
-
 }

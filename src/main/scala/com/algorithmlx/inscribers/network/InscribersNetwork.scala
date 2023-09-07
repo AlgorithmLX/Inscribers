@@ -3,12 +3,12 @@ package com.algorithmlx.inscribers.network
 import com.algorithmlx.inscribers.Constant.reloc
 import com.algorithmlx.inscribers.network.packet.SDirectionPack
 import net.minecraft.entity.player.ServerPlayerEntity
-import net.minecraft.network.PacketBuffer
-import net.minecraftforge.fml.network.{NetworkDirection, NetworkEvent, NetworkRegistry, PacketDistributor}
 import net.minecraftforge.fml.network.simple.SimpleChannel
+import net.minecraftforge.fml.network.{NetworkDirection, NetworkEvent, NetworkRegistry, PacketDistributor}
 
 import java.util.function.Supplier
 
+//noinspection ScalaUnusedSymbol
 object InscribersNetwork {
   private var simpleChannel: SimpleChannel = _
   private var id: Int = 0

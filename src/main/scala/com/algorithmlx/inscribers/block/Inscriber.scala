@@ -1,7 +1,6 @@
 package com.algorithmlx.inscribers.block
 
 import com.algorithmlx.inscribers.api.helper.VoxelBuilder
-import com.algorithmlx.inscribers.compact.CompactInitializer
 import com.algorithmlx.inscribers.init.registry.Register
 import net.minecraft.block.AbstractBlock.Properties
 import net.minecraft.block.{Block, BlockRenderType, BlockState}
@@ -9,6 +8,7 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.shapes.{ISelectionContext, VoxelShape}
 import net.minecraft.world.IBlockReader
+
 //noinspection ScalaDeprecation
 class Inscriber(properties: Properties) extends Block(properties) {
   private val voxel = VoxelBuilder.builder

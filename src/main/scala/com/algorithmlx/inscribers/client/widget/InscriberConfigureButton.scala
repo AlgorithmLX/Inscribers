@@ -13,17 +13,22 @@ class InscriberConfigureButton(
 ) extends InscribersButtonAPI(
   x,
   y,
-  8,
-  8,
+  16,
+  16,
   id,
   new StringTextComponent(""),
-  _ => {
-    if (InscribersButtonAPI.getActivated) InscribersButtonAPI.setActivated(false)
+  button => {
+    if (InscribersButtonAPI.getActivated) {
+      InscribersButtonAPI.setActivated(false)
+      InscribersNetwork.sendToServer(new SDirectionPack(InscribersButtonAPI.getId, InscribersButtonAPI.getActivated))
+    }
 
-    if (InscribersButtonAPI.getActivated(id)) InscribersButtonAPI.setActivated(value = false, id)
-    else {
-      InscribersNetwork.sendToServer(new SDirectionPack(id))
+    if (InscribersButtonAPI.getActivated(id)) {
+      InscribersButtonAPI.setActivated(value = false, id)
+      InscribersNetwork.sendToServer(new SDirectionPack(id, false))
+    } else {
       InscribersButtonAPI.setActivated(value = true, id)
+      InscribersNetwork.sendToServer(new SDirectionPack(id, true))
     }
   },
   reloc("textures/gui/button/inscriber_button.png")

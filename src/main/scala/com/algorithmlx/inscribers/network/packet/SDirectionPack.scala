@@ -6,26 +6,34 @@ import net.minecraftforge.fml.network.NetworkEvent
 
 import java.util.function.Supplier
 
+//noinspection ScalaUnusedSymbol
 class SDirectionPack private() {
   final var data = 0
+  final var enabled = false
 
-  def this(data: Int) = {
+  def this(data: Int, enabled: Boolean) = {
     this()
     this.data = data
+    this.enabled = enabled
   }
 
   def this(buf: PacketBuffer) = {
     this()
     this.data = buf.readInt()
+    this.enabled = buf.readBoolean()
   }
 
   def encode(buf: PacketBuffer): Unit = {
     buf.writeInt(this.data)
+    buf.writeBoolean(this.enabled)
   }
 
   def handle(ctx: Supplier[NetworkEvent.Context]): Unit = {
     val context = ctx.get()
-    context.enqueueWork(()=> InscriberDirectionSettingsServer.setData(this.data))
+    context.enqueueWork(()=> {
+      InscriberDirectionSettingsServer.setData(this.data)
+      InscriberDirectionSettingsServer.setEnabled(this.enabled)
+    })
   }
 }
 

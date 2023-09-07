@@ -1,13 +1,11 @@
 package com.algorithmlx.inscribers.block
 
-import com.algorithmlx.inscribers.Constant
 import com.algorithmlx.inscribers.api.block.ContainerBlockEntity
 import com.algorithmlx.inscribers.api.handler.{SidedItemHandlerModifiable, StackHandler}
-import com.algorithmlx.inscribers.api.helper.MojTextBuilder
+import com.algorithmlx.inscribers.api.helper.MojTextHelper
 import com.algorithmlx.inscribers.energy.InscribersEnergyStorage
 import com.algorithmlx.inscribers.init.config.InscribersConfig
 import com.algorithmlx.inscribers.init.registry.{InscribersRecipeTypes, Register}
-import com.algorithmlx.inscribers.menu.InscriberContainerMenu
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
 import com.algorithmlx.inscribers.server.InscriberDirectionSettingsServer
 import net.minecraft.entity.player.{PlayerEntity, PlayerInventory}
@@ -15,7 +13,7 @@ import net.minecraft.inventory.container.{Container, INamedContainerProvider}
 import net.minecraft.tileentity.{ITickableTileEntity, TileEntity, TileEntityType}
 import net.minecraft.util.Direction
 import net.minecraft.util.Direction._
-import net.minecraft.util.text.{ITextComponent, TranslationTextComponent}
+import net.minecraft.util.text.ITextComponent
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.util.LazyOptional
 import net.minecraftforge.energy.CapabilityEnergy
@@ -24,9 +22,9 @@ import net.minecraftforge.items.{CapabilityItemHandler, IItemHandlerModifiable}
 import scala.annotation.unused
 
 class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends ContainerBlockEntity(`type`) with ITickableTileEntity with INamedContainerProvider {
-  // Finales
+  // Constants
   private val energy: InscribersEnergyStorage = new InscribersEnergyStorage(InscribersConfig.INSCRIBER_CAPACITY.get(), () => {})
-  private val inventory = new StackHandler(32, () => this.changeX())
+  private val inventory = new StackHandler(36, () => this.changeX())
   protected var isWorking = false;
 
   private val energyLazy: LazyOptional[InscribersEnergyStorage] = LazyOptional.of(()=> this.getEnergy)
@@ -43,7 +41,7 @@ class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends Container
   private var progress: Int = _
   private var recipe: InscriberRecipe = _
 
-  override def getInv(): StackHandler = this.inventory
+  override def getInv: StackHandler = this.inventory
 
   override def tick(): Unit = {
     val level = this.getLevel
@@ -68,7 +66,7 @@ class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends Container
 
         if (this.progress >= resultTime) {
           var i = 1
-          val finalSlot = 32
+          val finalSlot = 36
           while (i < finalSlot) {
             this.inventory.extract(i, 1, simulate = false)
             i += 1
@@ -82,7 +80,7 @@ class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends Container
     }
   }
 
-  override def getDisplayName: ITextComponent = MojTextBuilder.menu("inscriber")
+  override def getDisplayName: ITextComponent = MojTextHelper.menu("inscriber")
 
   override def createMenu(windowId : Int, inventory : PlayerInventory, player : PlayerEntity): Container =
     Register.INSCRIBER_MENU_TYPE.create(windowId, inventory)
@@ -91,12 +89,14 @@ class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends Container
     if (cap == CapabilityEnergy.ENERGY) return energyLazy.cast()
 
     if (side != null && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-      if (this.getSide == 0 && side == DOWN) return this.inventoryCap(this.getSide).cast()
-      else if (this.getSide == 1 && side == UP) return this.inventoryCap(this.getSide).cast()
-      else if (this.getSide == 2 && side == NORTH) return this.inventoryCap(this.getSide).cast()
-      else if (this.getSide == 3 && side == SOUTH) return this.inventoryCap(this.getSide).cast()
-      else if (this.getSide == 4 && side == WEST) return this.inventoryCap(this.getSide).cast()
-      else if (this.getSide == 5 && side == EAST) return this.inventoryCap(this.getSide).cast()
+      val sideData = InscriberDirectionSettingsServer.getData
+
+      if (sideData == 0 && side == DOWN) return this.inventoryCap(sideData).cast()
+      else if (sideData == 1 && side == UP) return this.inventoryCap(sideData).cast()
+      else if (sideData == 2 && side == NORTH) return this.inventoryCap(sideData).cast()
+      else if (sideData == 3 && side == SOUTH) return this.inventoryCap(sideData).cast()
+      else if (sideData == 4 && side == WEST) return this.inventoryCap(sideData).cast()
+      else if (sideData == 5 && side == EAST) return this.inventoryCap(sideData).cast()
     }
 
     super.getCapability(cap, side)
@@ -106,30 +106,31 @@ class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends Container
     this.energy
   }
 
-  def canExtractBySlot(slot: Int, direction: Direction): Boolean = {
-    if (direction == null)
-      return true
-    if (slot == 32) {
-      if (this.getSide == 0 && direction == DOWN) return true
-      else if (this.getSide == 1 && direction == UP) return true
-      else if (this.getSide == 2 && direction == NORTH) return true
-      else if (this.getSide == 3 && direction == SOUTH) return true
-      else if (this.getSide == 4 && direction == WEST) return true
-      else if (this.getSide == 5 && direction == EAST) return true
-    }
-    false
-  }
-
   /*
   -------------------------------------------------------------------------
   | 0 -> Down | 1 -> Up | 2 -> North | 3 -> South | 4 -> West | 5 -> East |
   _________________________________________________________________________
   */
-  def getSide: Int = {
-    InscriberDirectionSettingsServer.getData
+  def canExtractBySlot(slot: Int, direction: Direction): Boolean = {
+    if (direction == null)
+      return true
+    if (slot == 0) {
+      val side = InscriberDirectionSettingsServer.getData
+      val enabled = InscriberDirectionSettingsServer.getEnabled
+
+      if (side == 0 && direction == DOWN) return enabled
+      else if (side == 1 && direction == UP) return enabled
+      else if (side == 2 && direction == NORTH) return enabled
+      else if (side == 3 && direction == SOUTH) return enabled
+      else if (side == 4 && direction == WEST) return enabled
+      else if (side == 5 && direction == EAST) return enabled
+    }
+    false
   }
 
   def getProgress: Int = {
     this.progress
   }
+
+  def getTime: Int = if (this.recipe == null) 0 else this.recipe.getTime
 }

@@ -14,9 +14,9 @@ import net.minecraftforge.common.util.LazyOptional
 import net.minecraftforge.items.{CapabilityItemHandler, IItemHandler}
 
 abstract class ContainerBlockEntity(blockEntityType: TileEntityType[_]) extends TileEntity(blockEntityType) {
-  private val cap: LazyOptional[IItemHandler] = LazyOptional.of(()=> this.getInv())
+  private val cap: LazyOptional[IItemHandler] = LazyOptional.of(()=> this.getInv)
 
-  def getInv(): StackHandler
+  def getInv: StackHandler
 
   override def getUpdatePacket: SUpdateTileEntityPacket = new SUpdateTileEntityPacket(this.getBlockPos, -1, this.getUpdateTag)
 
@@ -26,12 +26,12 @@ abstract class ContainerBlockEntity(blockEntityType: TileEntityType[_]) extends 
 
   override def load(state : BlockState, tag : CompoundNBT): Unit = {
     super.load(state, tag)
-    this.getInv().deserializeNBT(tag)
+    this.getInv.deserializeNBT(tag)
   }
 
   override def save(tag : CompoundNBT): CompoundNBT = {
     super.save(tag)
-    tag.merge(this.getInv().serializeNBT())
+    tag.merge(this.getInv.serializeNBT())
   }
 
   override def getCapability[T](cap: Capability[T], side: Direction): LazyOptional[T] = {

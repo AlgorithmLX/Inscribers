@@ -2,9 +2,9 @@ package com.algorithmlx.inscribers.recipe
 
 import com.google.gson.{JsonElement, JsonObject}
 import net.minecraft.inventory.IInventory
-import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.item.crafting.Ingredient
-import net.minecraft.item.crafting.Ingredient.{IItemList, SingleItemList}
+import net.minecraft.item.crafting.Ingredient.SingleItemList
+import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.util.{JSONUtils, ResourceLocation}
 import net.minecraftforge.registries.ForgeRegistries
 

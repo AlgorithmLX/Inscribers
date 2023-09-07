@@ -15,4 +15,3 @@ class StackHandlerSlot(
 
   override def remove(amount: Int): ItemStack = this.handler.extract(this.index, amount, simulate = false)
 }
-

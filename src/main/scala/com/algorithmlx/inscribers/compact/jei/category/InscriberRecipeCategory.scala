@@ -16,7 +16,7 @@ import net.minecraft.util.text.TranslationTextComponent
 
 class InscriberRecipeCategory(guiHelper: IGuiHelper) extends IRecipeCategory[InscriberRecipe] {
   private val texture: ResourceLocation = reloc("textures/gui/jei/inscriber.png")
-  private val background: IDrawable = guiHelper.createDrawable(texture, 0, 0, null, null) // null replace to size
+  private val background: IDrawable = guiHelper.createDrawable(texture, 0, 0, 130, 168) // null replace to size
   private val icon: IDrawable = guiHelper.createDrawableIngredient(new ItemStack(Register.INSCRIBER_BLOCK.get()))
 
   override def getUid: ResourceLocation = reloc("inscriber")

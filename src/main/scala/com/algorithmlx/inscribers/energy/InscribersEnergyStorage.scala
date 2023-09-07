@@ -2,6 +2,7 @@ package com.algorithmlx.inscribers.energy
 
 import net.minecraftforge.energy.EnergyStorage
 
+//noinspection ScalaUnusedSymbol
 class InscribersEnergyStorage(capacity: Int, maxReceive: Int, maxExtract: Int, inscriberEnergy: Int, runnable: Runnable)
   extends EnergyStorage(capacity, maxReceive, maxExtract, inscriberEnergy) {
 

@@ -3,7 +3,7 @@ package com.algorithmlx.inscribers.api.helper
 import com.algorithmlx.inscribers.Constant
 import net.minecraft.util.text._
 
-object MojTextBuilder {
+object MojTextHelper {
   def menu(context: String): ITextComponent = {
     translate("menu", context)
   }

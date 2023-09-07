@@ -1,6 +1,5 @@
 package com.algorithmlx.inscribers.compact.crafttweaker
 
-import com.algorithmlx.inscribers.Constant
 import com.algorithmlx.inscribers.Constant.reloc
 import com.algorithmlx.inscribers.init.registry.InscribersRecipeTypes
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
@@ -15,7 +14,7 @@ import net.minecraft.item.crafting.{IRecipe, IRecipeType}
 import org.openzen.zencode.java.ZenCodeType
 
 @IRecipeHandler.For(classOf[InscriberRecipe])
-@ZenCodeType.Name(s"mods.${Constant.ModId}.InscriberRecipe")
+@ZenCodeType.Name("mods.inscribers.InscriberRecipe")
 @ZenRegister
 class InscriberCraftTweakerRecipe extends IRecipeManager with IRecipeHandler[InscriberRecipe] {
   @ZenCodeType.Method

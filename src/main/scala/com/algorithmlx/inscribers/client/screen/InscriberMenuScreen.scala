@@ -1,10 +1,12 @@
 package com.algorithmlx.inscribers.client.screen
 
+import com.algorithmlx.inscribers.Constant.reloc
 import com.algorithmlx.inscribers.api.client.EnergyWidget
 import com.algorithmlx.inscribers.block.InscriberBlockEntity
 import com.algorithmlx.inscribers.client.widget.InscriberConfigureButton
 import com.algorithmlx.inscribers.menu.InscriberContainerMenu
 import com.mojang.blaze3d.matrix.MatrixStack
+import net.minecraft.client.gui.AbstractGui
 import net.minecraft.client.gui.screen.inventory.ContainerScreen
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.util.text.ITextComponent
@@ -18,6 +20,7 @@ class InscriberMenuScreen(
   inventory,
   iTextComponent
 ) {
+  private val texture = reloc("textures/gui/inscriber.png")
   private var blockEntity: InscriberBlockEntity = _
   /*
   -------------------------------------------------------------------------
@@ -35,12 +38,33 @@ class InscriberMenuScreen(
 
     this.blockEntity = this.getBlockEntity
 
-    if (this.blockEntity != null)
-      this.addWidget(new EnergyWidget(11, 31, this.blockEntity.getEnergy))
+    if (this.blockEntity != null) this.addWidget(new EnergyWidget(11, 31, this.blockEntity.getEnergy))
   }
 
-  override def renderBg(pose : MatrixStack, partialTick : Float, p_230450_3_ : Int, p_230450_4_ : Int): Unit = {
+  override def render(poseStack : MatrixStack, mouseX : Int, mouseY : Int, partialTick : Float): Unit = {
+    this.renderBackground(poseStack)
+    super.render(poseStack, mouseX, mouseY, partialTick)
+    this.renderTooltip(poseStack, mouseX, mouseY)
+  }
 
+  override def renderBg(pose : MatrixStack, partialTick : Float, mouseX : Int, mouseY : Int): Unit = {
+    this.getMinecraft.getTextureManager.bind(this.texture)
+    this.getMinecraft.getTextureManager.bind(this.texture)
+    this.getMinecraft.getTextureManager.bind(this.texture)
+    this.getMinecraft.getTextureManager.bind(this.texture)
+
+    val x = this.getGuiLeft
+    val y = this.getGuiTop
+
+    AbstractGui.blit(pose, x + 176, y + 21, 277, 0, 51, 55, 328, 328)
+    AbstractGui.blit(pose, x + 186, y + 134, 300, 77, 28, 28, 328, 328)
+    AbstractGui.blit(pose, x + 210, y + 25, 315, 107, 13, 13, 328, 328)
+    AbstractGui.blit(pose, x, y, 0, 0, 176, 280, 328, 328)
+
+    if (this.getProgress > 0) {
+      val progressScale = this.getProgressScale(24)
+      this.blit(pose, x + 78, y + 129, 299, 0, progressScale + 1, 17)
+    }
   }
 
   private def getBlockEntity: InscriberBlockEntity = {
@@ -53,5 +77,15 @@ class InscriberMenuScreen(
     }
 
     null
+  }
+
+  def getProgress: Int = if (this.blockEntity == null) 0 else this.blockEntity.getProgress
+
+  def getOperationTime: Int = if (this.blockEntity == null) 0 else this.blockEntity.getTime
+
+  def getProgressScale(pix: Int): Int = {
+    val progress = this.getProgress
+    val time = this.getOperationTime
+    if (progress != 0 && time != 0) ((progress * pix).longValue / time).intValue else 0
   }
 }

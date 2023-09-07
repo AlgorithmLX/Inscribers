@@ -12,6 +12,7 @@ import net.minecraft.item.{BlockItem, ItemStack}
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.model.animation.TileEntityRendererAnimation
 
+//noinspection DuplicatedCode
 class InscriberBlockEntityRenderer(ctx: TileEntityRendererDispatcher) extends TileEntityRendererAnimation[InscriberBlockEntity](ctx) {
   override def render(
     blockEntity : InscriberBlockEntity,
@@ -21,13 +22,13 @@ class InscriberBlockEntityRenderer(ctx: TileEntityRendererDispatcher) extends Ti
     light : Int,
     otherLight : Int
   ): Unit = {
-    val inv = blockEntity.getInv()
+    val inv = blockEntity.getInv
 
     for (i <- 1 until 36) {
       val stack = inv.getStackInSlot(i)
       if (!stack.isEmpty) {
-        for (i <- 0 until 5) {
-          for (j <- 0 until 5) {
+        for (i <- 0 until 6) {
+          for (j <- 0 until 6) {
             this.renderItem(poseStack, stack, 11.25 - 1.5 * i, 11.3 - 1.5 * j, buf, light, otherLight)
           }
         }
