@@ -59,7 +59,7 @@ configure<UserDevExtension> {
             jvmArg("-XX:+AllowEnhancedClassRedefinition")
             property("forge.logging.markers", "REGISTRIES")
             property("forge.logging.console.level", "debug")
-            property("forge.enabledGameTestNamespaces", "AncientMagic")
+            property("forge.enabledGameTestNamespaces", "Inscribers")
             property("mixin.env.remapRefMap", "true")
             property("mixin.env.refMapRemappingFile", "${buildDir}/createSrgToMcp/output.srg")
             arg("-mixin.config=inscribers.mixins.json")
@@ -77,7 +77,7 @@ configure<UserDevExtension> {
             jvmArg("-XX:+AllowEnhancedClassRedefinition")
             property("forge.logging.markers", "REGISTRIES")
             property("forge.logging.console.level", "debug")
-            property("forge.enabledGameTestNamespaces", "AncientMagic")
+            property("forge.enabledGameTestNamespaces", "Inscribers")
             property("mixin.env.remapRefMap", "true")
             property("mixin.env.refMapRemappingFile", "${buildDir}/createSrgToMcp/output.srg")
             arg("-mixin.config=inscribers.mixins.json")
@@ -159,7 +159,7 @@ tasks {
                     "Implementation-Version" to version,
                     "Implementation-Timestamp" to ZonedDateTime.now()
                         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")),
-                    "MixinConfigs" to "ancient.mixins.json"
+                    "MixinConfigs" to "inscribers.mixins.json"
                 )
             )
         }

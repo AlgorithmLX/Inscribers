@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "com.algorithmlx.inscribers.mixin",
   "compatibilityLevel": "JAVA_8",
-  "refmap": "Inscribers.refmap.json",
+  "refmap": "inscribers.refmap.json",
   "mixins": [
   ],
   "client": [
