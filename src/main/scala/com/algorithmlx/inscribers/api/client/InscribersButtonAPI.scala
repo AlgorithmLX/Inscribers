@@ -11,10 +11,10 @@ import net.minecraft.util.ResourceLocation
 import net.minecraft.util.text.{ITextComponent, StringTextComponent}
 
 class InscribersButtonAPI private(
-  private val x: Int,
-  private val y: Int,
-  private val width: Int,
-  private val height: Int,
+  private val buttonX: Int,
+  private val buttonY: Int,
+  private val buttonWidth: Int,
+  private val buttonHeight: Int,
   private val id: Int,
   private val text: ITextComponent,
   onPress: IPressable,
@@ -23,7 +23,7 @@ class InscribersButtonAPI private(
   private val stack: ItemStack,
   private val stackedTexture: Boolean,
   private val enableDoubleButton: Boolean
-) extends Button(x, y, width, height, text, onPress, tooltip) {
+) extends Button(buttonX, buttonY, buttonWidth, buttonHeight, text, onPress, tooltip) {
 
   def this(x: Int, y: Int, width: Int, height: Int, id: Int, text: ITextComponent, onPress: IPressable, tooltip: ITooltip, reloc: ResourceLocation, enableDoubleButton: Boolean) = {
     this(x, y, width, height, id, text, onPress, tooltip, reloc, ItemStack.EMPTY, false, enableDoubleButton)
@@ -47,29 +47,29 @@ class InscribersButtonAPI private(
 
     poseStack.pushPose()
     if (this.text != null)
-      font.draw(poseStack, this.text, this.x, this.y + this.height / 4F, 0xFFFFFF)
+      font.draw(poseStack, this.text, this.buttonX * 1F, (this.buttonY + this.buttonHeight) / 4F, 0xFFFFFF)
 
     if (!this.stackedTexture) {
-      val textureW = this.width / 2
-      val textureH = this.height / 2
+      val textureW = this.buttonWidth / 2
+      val textureH = this.buttonHeight / 2
       Minecraft.getInstance().getTextureManager.bind(this.reloc)
       if (this.enableDoubleButton) {
         if (!getActivated(id)) {
           if (!this.isCursorAtButton(mouseX, mouseY)) {
-            blit(poseStack, textureW, textureH, 0, 0, this.width, this.height)
+            blit(poseStack, textureW, textureH, 0, 0, this.buttonWidth, this.buttonHeight)
           } else {
-            blit(poseStack, textureW, textureH, 0, 8, this.width, this.height)
+            blit(poseStack, textureW, textureH, 0, 8, this.buttonWidth, this.buttonHeight)
           }
         } else {
           if (!this.isCursorAtButton(mouseX, mouseY)) {
-            blit(poseStack, textureW, textureH, 8, 0, this.width, this.height)
+            blit(poseStack, textureW, textureH, 8, 0, this.buttonWidth, this.buttonHeight)
           } else {
-            blit(poseStack, textureW, textureH, 8, 8, this.width, this.height)
+            blit(poseStack, textureW, textureH, 8, 8, this.buttonWidth, this.buttonHeight)
           }
         }
       }
     } else {
-      this.renderItem(poseStack, this.stack, this.x, this.y)
+      this.renderItem(poseStack, this.stack, this.buttonX, this.buttonY)
     }
 
     poseStack.popPose()
@@ -84,7 +84,7 @@ class InscribersButtonAPI private(
     RenderSystem.popMatrix()
   }
 
-  def isCursorAtButton(cursorX: Int, cursorY: Int): Boolean = cursorX >= x && cursorY >= y && cursorX <= x + width&& cursorY <= y + height
+  def isCursorAtButton(cursorX: Int, cursorY: Int): Boolean = cursorX >= buttonX && cursorY >= buttonY && cursorX <= buttonX + buttonWidth&& cursorY <= buttonY + buttonHeight
 }
 
 object InscribersButtonAPI {

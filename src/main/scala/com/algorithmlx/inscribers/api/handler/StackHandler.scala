@@ -1,5 +1,6 @@
 package com.algorithmlx.inscribers.api.handler
 
+import com.algorithmlx.inscribers.api.JUtils
 import net.minecraft.inventory.IInventory
 import net.minecraft.item.ItemStack
 import net.minecraft.util.NonNullList
@@ -55,7 +56,7 @@ class StackHandler(size: Int, changeX: Runnable) extends ItemStackHandler(size) 
   }
 
   def toContainer: IInventory = {
-    JStackHelper.invHelper(this.stacks.toArray(new Array[ItemStack](0)))
+    JUtils.invHelper(this.stacks.toArray(new Array[ItemStack](0)))
   }
 
   def copy(): StackHandler = {
