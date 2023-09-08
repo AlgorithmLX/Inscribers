@@ -1,13 +1,16 @@
 package com.algorithmlx.inscribers.block
 
 import com.algorithmlx.inscribers.api.helper.VoxelBuilder
-import com.algorithmlx.inscribers.init.registry.Register
 import net.minecraft.block.AbstractBlock.Properties
 import net.minecraft.block.{Block, BlockRenderType, BlockState}
+import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.inventory.InventoryHelper
 import net.minecraft.tileentity.TileEntity
-import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.shapes.{ISelectionContext, VoxelShape}
-import net.minecraft.world.IBlockReader
+import net.minecraft.util.math.{BlockPos, BlockRayTraceResult}
+import net.minecraft.util.{ActionResultType, Hand}
+import net.minecraft.world.{IBlockReader, World}
+import net.minecraftforge.fml.network.NetworkHooks
 
 //noinspection ScalaDeprecation
 class Inscriber(properties: Properties) extends Block(properties) {
@@ -37,17 +40,31 @@ class Inscriber(properties: Properties) extends Block(properties) {
     .qb(7.25, 13, 3.275, 8.75, 14.5, 11.775)
     .of
 
+  override def use(state : BlockState, level : World, pos : BlockPos, player : PlayerEntity, hand : Hand, result : BlockRayTraceResult): ActionResultType = {
+    if (!level.isClientSide) {
+      val blockEntity = level.getBlockEntity(pos)
+      if (blockEntity.isInstanceOf[InscriberBlockEntity])
+        NetworkHooks.openGui(player.asInstanceOf, blockEntity.asInstanceOf, pos)
+    }
+
+    ActionResultType.SUCCESS
+  }
+
+  override def onRemove(oldState : BlockState, level : World, pos : BlockPos, newState : BlockState, isMoving : Boolean): Unit = {
+    val blockEntity = level.getBlockEntity(pos)
+    blockEntity match {
+      case inscriber: InscriberBlockEntity => InventoryHelper.dropContents(level, pos, inscriber.getInv.getStackList)
+      case _ =>
+    }
+  }
+
   override def getShape(state: BlockState, reader: IBlockReader, pos: BlockPos, select: ISelectionContext): VoxelShape = this.voxel
 
   override def hasTileEntity(state: BlockState): Boolean = true
 
-  override def createTileEntity(state: BlockState, world: IBlockReader): TileEntity = new InscriberBlockEntity(Register.INSCRIBER_BLOCK_ENTITY.get())
+  override def createTileEntity(state: BlockState, world: IBlockReader): TileEntity = new InscriberBlockEntity()
 
   override def getRenderShape(p_149645_1_ : BlockState): BlockRenderType = {
-//    if (CompactInitializer.isGeckolibLoaded) {
-//      return BlockRenderType.ENTITYBLOCK_ANIMATED
-//    }
-
     super.getRenderShape(p_149645_1_)
   }
 }

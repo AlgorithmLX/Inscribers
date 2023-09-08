@@ -86,6 +86,7 @@ class InscribersButtonAPI private(
 
   def isCursorAtButton(cursorX: Int, cursorY: Int): Boolean = cursorX >= x && cursorY >= y && cursorX <= x + width&& cursorY <= y + height
 }
+
 object InscribersButtonAPI {
   private var activated = false
   private var id = 0

@@ -6,10 +6,14 @@ import com.algorithmlx.inscribers.api.helper.MojTextHelper
 import com.algorithmlx.inscribers.energy.InscribersEnergyStorage
 import com.algorithmlx.inscribers.init.config.InscribersConfig
 import com.algorithmlx.inscribers.init.registry.{InscribersRecipeTypes, Register}
+import com.algorithmlx.inscribers.network.InscribersNetwork
+import com.algorithmlx.inscribers.network.packet.SDirectionPack
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
 import com.algorithmlx.inscribers.server.InscriberDirectionSettingsServer
+import net.minecraft.block.BlockState
 import net.minecraft.entity.player.{PlayerEntity, PlayerInventory}
 import net.minecraft.inventory.container.{Container, INamedContainerProvider}
+import net.minecraft.nbt.CompoundNBT
 import net.minecraft.tileentity.{ITickableTileEntity, TileEntity, TileEntityType}
 import net.minecraft.util.Direction
 import net.minecraft.util.Direction._
@@ -21,11 +25,11 @@ import net.minecraftforge.items.{CapabilityItemHandler, IItemHandlerModifiable}
 
 import scala.annotation.unused
 
-class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends ContainerBlockEntity(`type`) with ITickableTileEntity with INamedContainerProvider {
+class InscriberBlockEntity(`type`: TileEntityType[TileEntity] = Register.INSCRIBER_BLOCK_ENTITY.get()) extends ContainerBlockEntity(`type`) with ITickableTileEntity with INamedContainerProvider {
   // Constants
   private val energy: InscribersEnergyStorage = new InscribersEnergyStorage(InscribersConfig.INSCRIBER_CAPACITY.get(), () => {})
   private val inventory = new StackHandler(36, () => this.changeX())
-  protected var isWorking = false;
+  protected var isWorking = false
 
   private val energyLazy: LazyOptional[InscribersEnergyStorage] = LazyOptional.of(()=> this.getEnergy)
   private val inventoryCap: Array[LazyOptional[IItemHandlerModifiable]] = SidedItemHandlerModifiable.create(
@@ -78,6 +82,22 @@ class InscriberBlockEntity(`type`: TileEntityType[TileEntity]) extends Container
         }
       }
     }
+  }
+
+  override def save(tag: CompoundNBT): CompoundNBT = {
+    super.save(tag)
+    tag.putInt("InscriberProgress", this.progress)
+    tag.putInt("InscriberEnergy", this.energy.getEnergyStored)
+    tag.putInt("InscriberExitSide", InscriberDirectionSettingsServer.getData)
+    tag.putBoolean("EnableInscriberExitSide", InscriberDirectionSettingsServer.getEnabled)
+    tag
+  }
+
+  override def load(state: BlockState, tag: CompoundNBT): Unit = {
+    super.load(state, tag)
+    this.progress = tag.getInt("InscriberProgress")
+    this.energy.setStored(tag.getInt("InscriberEnergy"))
+    InscribersNetwork.sendToServer(new SDirectionPack(tag.getInt("InscriberExitSide"), tag.getBoolean("EnableInscriberExitSide")))
   }
 
   override def getDisplayName: ITextComponent = MojTextHelper.menu("inscriber")
