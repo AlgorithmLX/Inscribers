@@ -1,4 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import net.minecraftforge.gradle.patcher.tasks.ReobfuscateJar
 import net.minecraftforge.gradle.userdev.UserDevExtension
 import net.minecraftforge.gradle.userdev.tasks.JarJar
@@ -16,20 +15,23 @@ plugins {
     eclipse
     idea
     scala
-    id("com.github.johnrengelman.shadow") version "8.+"
     id("net.minecraftforge.gradle") version "6.+"
     id("org.parchmentmc.librarian.forgegradle") version "1.+"
 }
 
 apply(plugin = "org.spongepowered.mixin")
 
-jarJar.enable()
+evaluationDependsOnChildren()
 
 val mod_version: String by project
 val mod_group_id: String by project
 val minecraft_version: String by project
 val forge_version: String by project
+
+val shadowX: Configuration by configurations.creating
 val main = sourceSets["main"]
+
+jarJar.enable()
 
 group = mod_group_id
 version = mod_version
@@ -39,7 +41,7 @@ java {
 }
 
 configurations {
-    implementation.get().extendsFrom(this["shadow"])
+    minecraftLibrary { extendsFrom(shadowX) }
 }
 
 configure<UserDevExtension> {
@@ -124,7 +126,6 @@ repositories {
 dependencies {
     minecraft("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
-    val shadow = configurations["shadow"]
     val registrate_version: String by project
     val registrate_range: String by project
     val scala_version: String by project
@@ -132,10 +133,12 @@ dependencies {
     val craftTweakerVersion: String by project
 
     compileOnly(fg.deobf("com.tterrag.registrate:Registrate:MC${minecraft_version}-${registrate_version}"))
-    jarJar(group = "com.tterrag.registrate", name = "Registrate", version = "[MC${minecraft_version},MC${registrate_range})")
+    jarJar(fg.deobf("com.tterrag.registrate:Registrate:MC${minecraft_version}-${registrate_version}")) {
+        jarJar.ranged(this, "[MC${minecraft_version},MC${registrate_range})")
+    }
 
-    shadow("org.scala-lang:scala-library:${scala_version}")
-    shadow("org.scala-lang:scala-reflect:${scala_version}")
+    shadowX("org.scala-lang:scala-library:${scala_version}")
+    shadowX("org.scala-lang:scala-reflect:${scala_version}")
 
     compileOnly(fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${craftTweakerVersion}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api"))
@@ -146,7 +149,6 @@ dependencies {
 }
 
 tasks {
-    getByName("build").dependsOn("shadowJar")
     withType<Jar> {
         from(main.output)
         manifest {
@@ -166,22 +168,12 @@ tasks {
         finalizedBy("reobfJar")
     }
 
-    getByName<ShadowJar>("shadowJar") {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-        configurations = listOf(project.configurations.getByName("shadow"))
-
-        archiveClassifier.set("")
-
-        mergeServiceFiles()
-        exclude("**/module-info.class")
-    }
-
     withType<ReobfuscateJar> {
         jarJar
     }
 
     withType<JarJar> {
+        from(provider { shadowX.map(::zipTree).toTypedArray() })
         finalizedBy("reobfJarJar")
     }
 
