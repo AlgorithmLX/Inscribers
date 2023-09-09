@@ -1,9 +1,15 @@
 pluginManagement {
     repositories {
+        mavenCentral()
         gradlePluginPortal()
         maven("https://maven.minecraftforge.net/")
         maven("https://repo.spongepowered.org/repository/maven-public/")
         maven("https://maven.parchmentmc.org")
+    }
+    val kotlinVersion: String by settings
+    plugins {
+        kotlin("jvm") version kotlinVersion
+        kotlin("plugin.serialization") version kotlinVersion
     }
 }
 

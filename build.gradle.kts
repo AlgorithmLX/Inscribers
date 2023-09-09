@@ -14,7 +14,8 @@ buildscript {
 plugins {
     eclipse
     idea
-    scala
+    kotlin("jvm")
+    kotlin("plugin.serialization")
     id("net.minecraftforge.gradle") version "6.+"
     id("org.parchmentmc.librarian.forgegradle") version "1.+"
 }
@@ -28,7 +29,7 @@ val mod_group_id: String by project
 val minecraft_version: String by project
 val forge_version: String by project
 
-val shadowX: Configuration by configurations.creating
+val shadow: Configuration by configurations.creating
 val main = sourceSets["main"]
 
 jarJar.enable()
@@ -41,7 +42,7 @@ java {
 }
 
 configurations {
-    minecraftLibrary { extendsFrom(shadowX) }
+    minecraftLibrary { extendsFrom(shadow) }
 }
 
 configure<UserDevExtension> {
@@ -128,17 +129,24 @@ dependencies {
 
     val registrate_version: String by project
     val registrate_range: String by project
-    val scala_version: String by project
     val jei_version: String by project
     val craftTweakerVersion: String by project
+    val coroutinesVersion: String by project
+    val serializationVersion: String by project
 
-    compileOnly(fg.deobf("com.tterrag.registrate:Registrate:MC${minecraft_version}-${registrate_version}"))
-    jarJar(fg.deobf("com.tterrag.registrate:Registrate:MC${minecraft_version}-${registrate_version}")) {
-        jarJar.ranged(this, "[MC${minecraft_version},MC${registrate_range})")
-    }
-
-    shadowX("org.scala-lang:scala-library:${scala_version}")
-    shadowX("org.scala-lang:scala-reflect:${scala_version}")
+    shadow(kotlin("reflect"))
+    shadow(kotlin("stdlib"))
+    shadow(kotlin("stdlib-common"))
+    shadow(kotlinx("coroutines-core", coroutinesVersion))
+    shadow(kotlinx("coroutines-core-jvm", coroutinesVersion))
+    shadow(kotlinx("coroutines-jdk8", coroutinesVersion))
+    shadow(kotlinx("serialization-core", serializationVersion))
+    shadow(kotlinx("serialization-json", serializationVersion))
+//    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
+//    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:${coroutinesVersion}")
+//    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${coroutinesVersion}")
+//    shadow("org.jetbrains.kotlinx:kotlinx-serialization-core:${serializationVersion}")
+//    shadow("org.jetbrains.kotlinx:kotlinx-serialization-json:${serializationVersion}")
 
     compileOnly(fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${craftTweakerVersion}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api"))
@@ -173,7 +181,7 @@ tasks {
     }
 
     withType<JarJar> {
-        from(provider { shadowX.map(::zipTree).toTypedArray() })
+        from(provider { shadow.map(::zipTree).toTypedArray() })
         finalizedBy("reobfJarJar")
     }
 
@@ -181,3 +189,5 @@ tasks {
         options.encoding = "UTF-8"
     }
 }
+
+fun DependencyHandler.kotlinx(module: String, version: String? = null): Any = "org.jetbrains.kotlinx:kotlinx-$module${version?.let { ":$version" } ?: ""}"
