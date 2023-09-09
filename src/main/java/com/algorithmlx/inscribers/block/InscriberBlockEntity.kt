@@ -73,12 +73,7 @@ class InscriberBlockEntity(): ContainerBlockEntity(Register.inscriberBlockEntity
                 this.energy.extractEnergy(needsEnergy, simulate = false)
 
                 if (this.progress >= resultTime) {
-                    var i = 1
-                    val finalSlot = 36
-                    while (i < finalSlot) {
-                        this.inventory.extract(i, 1, simulate = false)
-                        i += 1
-                    }
+                    for (i in 1 until 36) this.inventory.extract(i, 1, simulate = false)
                     this.inventory.setStackInSlot(0, this.recipe!!.result(this.inventory))
                     this.progress = 0
                     this.isWorking = false
@@ -88,13 +83,13 @@ class InscriberBlockEntity(): ContainerBlockEntity(Register.inscriberBlockEntity
         }
     }
 
-    override fun save(tag: CompoundNBT): CompoundNBT {
-        super.save(tag)
-        tag.putInt("InscriberProgress", this.progress)
-        tag.putInt("InscriberEnergy", this.energy.energyStored)
-        tag.putInt("InscriberExitSide", InscriberDirectionSettingsServer.data)
-        tag.putBoolean("EnableInscriberExitSide", InscriberDirectionSettingsServer.enabled)
-        return tag
+    override fun save(pCompound: CompoundNBT): CompoundNBT {
+        super.save(pCompound)
+        pCompound.putInt("InscriberProgress", this.progress)
+        pCompound.putInt("InscriberEnergy", this.energy.energyStored)
+        pCompound.putInt("InscriberExitSide", InscriberDirectionSettingsServer.data)
+        pCompound.putBoolean("EnableInscriberExitSide", InscriberDirectionSettingsServer.enabled)
+        return pCompound
     }
 
     override fun load(state: BlockState, tag: CompoundNBT) {
