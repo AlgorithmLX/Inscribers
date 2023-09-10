@@ -8,8 +8,6 @@ import com.algorithmlx.inscribers.api.handler.StackHandler
 import com.algorithmlx.inscribers.energy.InscribersEnergyStorage
 import com.algorithmlx.inscribers.init.registry.InscribersRecipeTypes
 import com.algorithmlx.inscribers.init.registry.Register
-import com.algorithmlx.inscribers.network.InscribersNetwork
-import com.algorithmlx.inscribers.network.packet.SDirectionPack
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
 import com.algorithmlx.inscribers.server.InscriberDirectionSettingsServer
 import net.minecraft.block.BlockState
@@ -93,7 +91,6 @@ class InscriberBlockEntity: ContainerBlockEntity(Register.inscriberBlockEntity.g
         super.load(state, tag)
         this.progress = tag.getInt("InscriberProgress")
         this.energy.setStored(tag.getInt("InscriberEnergy"))
-        InscribersNetwork.sendToServer(SDirectionPack(tag.getInt("InscriberExitSide"), tag.getBoolean("EnableInscriberExitSide")))
     }
 
     override fun createMenu(windowId : Int, inventory : PlayerInventory, player : PlayerEntity): Container? =

@@ -11,6 +11,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
 
 object InscriberEvents {
+    @Synchronized
     @JvmStatic
     fun init() {
         modBus.addListener(this::clientInit)
@@ -24,6 +25,7 @@ object InscriberEvents {
         )
     }
 
+    @Synchronized
     private fun tooltipEvent(evt: ItemTooltipEvent) {
         val stack = evt.itemStack
         val player = evt.player ?: return

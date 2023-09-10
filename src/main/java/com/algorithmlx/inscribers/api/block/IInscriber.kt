@@ -2,6 +2,7 @@ package com.algorithmlx.inscribers.api.block
 
 import com.algorithmlx.inscribers.api.translate
 import com.algorithmlx.inscribers.init.config.InscribersConfig
+import net.minecraft.block.HorizontalBlock
 import net.minecraft.state.DirectionProperty
 import net.minecraft.util.Direction
 import net.minecraft.util.text.TranslationTextComponent
@@ -41,16 +42,13 @@ interface IInscriber {
     }
 
     object InscriberStates {
-        val standardVariant = direction("standard_model")
+        val standardVariant = horizontal("standard_model")
 
-        private fun direction(id: String): DirectionProperty = DirectionProperty.create(
+        private fun horizontal(id: String): DirectionProperty = HorizontalBlock.FACING
+
+        private fun direction(id: String, vararg direction: Direction): DirectionProperty = DirectionProperty.create(
             id,
-            Direction.NORTH,
-            Direction.EAST,
-            Direction.SOUTH,
-            Direction.WEST,
-            Direction.UP,
-            Direction.DOWN
+            *direction
         )
     }
 }
