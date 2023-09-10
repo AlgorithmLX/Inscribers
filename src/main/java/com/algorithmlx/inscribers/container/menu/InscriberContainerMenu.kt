@@ -27,7 +27,7 @@ class InscriberContainerMenu(
     windowId: Int,
     inventory: PlayerInventory,
     private val usedByPlayer: (PlayerEntity) -> Boolean,
-    private val data: IIntArray,
+    data: IIntArray,
     val pos: BlockPos
 ): Container(Register.inscriberContainerMenu.get(), windowId) {
     private val result: IInventory = CraftResultInventory()
@@ -41,7 +41,8 @@ class InscriberContainerMenu(
 
         for (index in 1 until 36)
             for (i in 0 until 6)
-                for (j in 0 until 6) this.addSlot(StackHandlerSlot(inv, index, 36 + i * 18, 17 + j * 18))
+                for (j in 0 until 6)
+                    this.addSlot(StackHandlerSlot(inv, index, 36 + i * 18, 17 + j * 18))
 
         this.slotsChanged(craftInventory)
         this.addDataSlots(data)
@@ -49,10 +50,12 @@ class InscriberContainerMenu(
         this.addPlayerInventory(inventory, 8, 198)
     }
 
-    constructor(windowId: Int, inventory: PlayerInventory, packetBuffer: PacketBuffer): this(windowId, inventory, { _ -> false }, IntArray(36), packetBuffer.readBlockPos())
+    constructor(windowId: Int, inventory: PlayerInventory, packetBuffer: PacketBuffer):
+            this(windowId, inventory, { _ -> false }, IntArray(36), packetBuffer.readBlockPos())
 
     override fun slotsChanged(pContainer: IInventory) {
-        val recipe = this.level.recipeManager.getRecipeFor(InscribersRecipeTypes.inscriberRecipe, pContainer, this.level)
+        val recipe = this.level.recipeManager
+            .getRecipeFor(InscribersRecipeTypes.inscriberRecipe, pContainer, this.level)
         if (recipe.isPresent) {
             val result = recipe.get().assemble(pContainer)
             this.result.setItem(0, result)

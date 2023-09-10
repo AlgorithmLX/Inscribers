@@ -1,10 +1,13 @@
 package com.algorithmlx.inscribers.init.registry
 
 import com.algorithmlx.inscribers.ModId
+import com.algorithmlx.inscribers.api.isPhysicalClient
 import com.algorithmlx.inscribers.block.Inscriber
 import com.algorithmlx.inscribers.block.InscriberBlockEntity
+import com.algorithmlx.inscribers.client.screen.InscriberMenuScreen
 import com.algorithmlx.inscribers.container.menu.InscriberContainerMenu
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
+import net.minecraft.client.gui.ScreenManager
 import net.minecraft.inventory.container.ContainerType
 import net.minecraft.item.*
 import net.minecraft.tileentity.TileEntityType
@@ -34,7 +37,7 @@ object Register {
         TileEntityType.Builder.of(::InscriberBlockEntity, inscriberBlock.get()).build(null)
     }
     val inscriberContainerMenu: RegistryObject<ContainerType<InscriberContainerMenu>> = menuType.register(INSCRIBER_ID) {
-        IForgeContainerType.create { windowId, inv, data -> InscriberContainerMenu(windowId, inv, data) }
+        IForgeContainerType.create(::InscriberContainerMenu)
     }
 
     @JvmStatic
@@ -47,12 +50,16 @@ object Register {
         menuType.register(bus)
 
         bus.addListener(::registerBlockItems)
+
+        if (isPhysicalClient()) {
+            ScreenManager.register(this.inscriberContainerMenu.get(), ::InscriberMenuScreen)
+        }
     }
 
     fun <T : IForgeRegistryEntry<T>> deferred(reg: IForgeRegistry<T>): DeferredRegister<T> =
         DeferredRegister.create(reg, ModId)
 
-    fun registerBlockItems(evt: RegistryEvent.Register<Item>) {
+    private fun registerBlockItems(evt: RegistryEvent.Register<Item>) {
         block.entries.stream().map { it.get() }.forEach {
             evt.registry.register(BlockItem(it, Item.Properties().tab(tab)))
         }
