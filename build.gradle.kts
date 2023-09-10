@@ -35,7 +35,7 @@ val main = sourceSets["main"]
 jarJar.enable()
 
 group = mod_group_id
-version = mod_version
+version = "${minecraft_version}_${mod_version}"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(8))

@@ -9,6 +9,4 @@ interface IInscriberBlockEntity: ITickableTileEntity, INamedContainerProvider {
     fun getInscriber(): IInscriber
 
     override fun getDisplayName(): ITextComponent = menu("inscriber")
-
-
 }

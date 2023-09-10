@@ -5,6 +5,7 @@ import com.algorithmlx.inscribers.block.Inscriber
 import com.algorithmlx.inscribers.block.InscriberBlockEntity
 import com.algorithmlx.inscribers.container.menu.InscriberContainerMenu
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
+import net.minecraft.block.Block
 import net.minecraft.inventory.container.ContainerType
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
@@ -32,7 +33,7 @@ object Register {
     val menuType = deferred(ForgeRegistries.CONTAINERS)
 
     val inscriberRecipe: RegistryObject<InscriberRecipe.Serializer> = recipes.register(INSCRIBER_ID, InscriberRecipe::Serializer)
-    val inscriberBlock: RegistryObject<Inscriber> = block.register(INSCRIBER_ID, ::Inscriber)
+    val inscriberBlock: RegistryObject<Inscriber> = block(INSCRIBER_ID, ::Inscriber) { BlockItem(it, Item.Properties().tab(tab)) }
     val inscriberBlockEntity: RegistryObject<TileEntityType<InscriberBlockEntity>> = blockEntity.register(INSCRIBER_ID) {
         TileEntityType.Builder.of(::InscriberBlockEntity, inscriberBlock.get()).build(null)
     }
@@ -48,16 +49,14 @@ object Register {
         item.register(bus)
         blockEntity.register(bus)
         menuType.register(bus)
-
-        this.registerAllBlockItems()
-    }
-
-    fun registerAllBlockItems() {
-        this.block.entries.stream().map { it.get() }.forEach {
-            this.item.register(ForgeRegistries.BLOCKS.getKey(it)!!.path) { BlockItem(it, Item.Properties().tab(tab)) }
-        }
     }
 
     fun <T : IForgeRegistryEntry<T>> deferred(reg: IForgeRegistry<T>): DeferredRegister<T> =
         DeferredRegister.create(reg, ModId)
+
+    fun <T: Block> block(id: String, block: () -> T, item: (T) -> Item): RegistryObject<T> {
+        val registeredBlock = this.block.register(id, block)
+        this.item.register(id) { item.invoke(registeredBlock.get()) }
+        return registeredBlock
+    }
 }

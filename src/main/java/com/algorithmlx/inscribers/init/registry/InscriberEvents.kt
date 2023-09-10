@@ -14,6 +14,7 @@ object InscriberEvents {
     @JvmStatic
     fun init() {
         modBus.addListener(this::clientInit)
+
         forgeBus.addListener(this::tooltipEvent)
     }
 

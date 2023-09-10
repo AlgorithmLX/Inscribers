@@ -10,7 +10,6 @@ import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.inventory.InventoryHelper
 import net.minecraft.item.BlockItemUseContext
 import net.minecraft.state.StateContainer
-import net.minecraft.state.properties.BlockStateProperties
 import net.minecraft.util.ActionResultType
 import net.minecraft.util.Direction
 import net.minecraft.util.Hand
@@ -32,7 +31,7 @@ class Inscriber: Block(
         .requiresCorrectToolForDrops()
 ), IInscriber {
     init {
-        this.registerDefaultState(this.stateDefinition.any().setValue(BlockStateProperties.FACING, Direction.NORTH))
+        this.registerDefaultState(this.stateDefinition.any().setValue(IInscriber.InscriberStates.standardVariant, Direction.NORTH))
     }
 
     private val xVoxel = VoxelHelper.builder()
