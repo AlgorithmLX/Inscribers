@@ -6,7 +6,8 @@ import com.algorithmlx.inscribers.block.InscriberBlockEntity
 import com.algorithmlx.inscribers.container.menu.InscriberContainerMenu
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
 import net.minecraft.inventory.container.ContainerType
-import net.minecraft.item.*
+import net.minecraft.item.BlockItem
+import net.minecraft.item.Item
 import net.minecraft.tileentity.TileEntityType
 import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.common.extensions.IForgeContainerType
@@ -53,7 +54,7 @@ object Register {
 
     fun registerAllBlockItems() {
         this.block.entries.stream().map { it.get() }.forEach {
-            this.item.register(ForgeRegistries.BLOCKS.getKey(it)!!.path) { BlockItem(it, Item.Properties()) }
+            this.item.register(ForgeRegistries.BLOCKS.getKey(it)!!.path) { BlockItem(it, Item.Properties().tab(tab)) }
         }
     }
 
