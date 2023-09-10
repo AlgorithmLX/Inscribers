@@ -1,0 +1,16 @@
+{
+  "api.inscribers.container": "Размер контейнера: §6%s§fна§6%s",
+  "api.inscribers.capacity": "Максимальное количество энергии: %s",
+  "api.inscribers.type": "Тип высекателя: %s",
+  "api.inscribers.shift": "Зажмите §7[§6shift§7] чтобы увидеть больше информации.",
+
+  "api.type.inscribers.standard_inscriber": "Обычный",
+
+  "itemGroup.inscribers": "Inscribers",
+
+  "block.inscribers.inscriber": "Высекатель",
+
+  "menu.inscribers.inscriber": "Высекатель",
+
+  "jei.inscribers.category.inscriber": "Высекатель"
+}

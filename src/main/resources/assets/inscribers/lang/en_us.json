@@ -1,0 +1,16 @@
+{
+  "api.inscribers.container": "Container size: §6%s§fx§6%s",
+  "api.inscribers.capacity": "Max energy capacity: %s",
+  "api.inscribers.type": "Inscriber type: %s",
+  "api.inscribers.shift": "Hold §7[§6shift§7] for view more info.",
+
+  "api.type.inscribers.standard_inscriber": "Standard",
+
+  "itemGroup.inscribers": "Inscribers Mod",
+
+  "block.inscribers.inscriber": "Inscriber",
+
+  "menu.inscribers.inscriber": "Inscriber",
+
+  "jei.inscribers.category.inscriber": "Inscriber"
+}

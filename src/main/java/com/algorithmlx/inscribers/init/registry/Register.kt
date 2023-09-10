@@ -1,25 +1,24 @@
 package com.algorithmlx.inscribers.init.registry
 
 import com.algorithmlx.inscribers.ModId
-import com.algorithmlx.inscribers.api.isPhysicalClient
 import com.algorithmlx.inscribers.block.Inscriber
 import com.algorithmlx.inscribers.block.InscriberBlockEntity
-import com.algorithmlx.inscribers.client.screen.InscriberMenuScreen
 import com.algorithmlx.inscribers.container.menu.InscriberContainerMenu
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
-import net.minecraft.client.gui.ScreenManager
 import net.minecraft.inventory.container.ContainerType
 import net.minecraft.item.*
 import net.minecraft.tileentity.TileEntityType
+import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.common.extensions.IForgeContainerType
-import net.minecraftforge.event.RegistryEvent
 import net.minecraftforge.fml.RegistryObject
+import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import net.minecraftforge.registries.DeferredRegister
 import net.minecraftforge.registries.ForgeRegistries
 import net.minecraftforge.registries.IForgeRegistry
 import net.minecraftforge.registries.IForgeRegistryEntry
 
+@Mod.EventBusSubscriber(value = [Dist.DEDICATED_SERVER, Dist.CLIENT], modid = ModId, bus = Mod.EventBusSubscriber.Bus.MOD)
 @Suppress("MemberVisibilityCanBePrivate", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 object Register {
     private val tab = InscriberTab.create(ModId)
@@ -49,19 +48,15 @@ object Register {
         blockEntity.register(bus)
         menuType.register(bus)
 
-        bus.addListener(::registerBlockItems)
+        this.registerAllBlockItems()
+    }
 
-        if (isPhysicalClient()) {
-            ScreenManager.register(this.inscriberContainerMenu.get(), ::InscriberMenuScreen)
+    fun registerAllBlockItems() {
+        this.block.entries.stream().map { it.get() }.forEach {
+            this.item.register(ForgeRegistries.BLOCKS.getKey(it)!!.path) { BlockItem(it, Item.Properties()) }
         }
     }
 
     fun <T : IForgeRegistryEntry<T>> deferred(reg: IForgeRegistry<T>): DeferredRegister<T> =
         DeferredRegister.create(reg, ModId)
-
-    private fun registerBlockItems(evt: RegistryEvent.Register<Item>) {
-        block.entries.stream().map { it.get() }.forEach {
-            evt.registry.register(BlockItem(it, Item.Properties().tab(tab)))
-        }
-    }
 }

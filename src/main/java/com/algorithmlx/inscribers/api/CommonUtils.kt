@@ -6,14 +6,18 @@ import net.minecraft.util.text.*
 import net.minecraft.world.World
 import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.common.ForgeConfigSpec
+import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.ModList
 import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.common.thread.SidedThreadGroups
 import net.minecraftforge.fml.config.ModConfig
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import net.minecraftforge.fml.loading.FMLEnvironment
-import java.util.regex.Pattern
 
 val context = ModLoadingContext.get()
+
+val modBus = FMLJavaModLoadingContext.get().modEventBus
+val forgeBus = MinecraftForge.EVENT_BUS
 
 fun isLogicalClient(level: World): Boolean = level.isClientSide
 

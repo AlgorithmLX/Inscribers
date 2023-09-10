@@ -1,5 +1,6 @@
 package com.algorithmlx.inscribers.block
 
+import com.algorithmlx.inscribers.api.block.IInscriber
 import com.algorithmlx.inscribers.api.helper.VoxelHelper
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
@@ -23,7 +24,13 @@ import net.minecraftforge.common.ToolType
 import net.minecraftforge.fml.network.NetworkHooks
 
 @Suppress("override_deprecation")
-class Inscriber: Block(Properties.of(Material.METAL).noOcclusion().harvestLevel(3).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops()) {
+class Inscriber: Block(
+    Properties.of(Material.METAL)
+        .noOcclusion()
+        .harvestLevel(3)
+        .harvestTool(ToolType.PICKAXE)
+        .requiresCorrectToolForDrops()
+), IInscriber {
     init {
         this.registerDefaultState(this.stateDefinition.any().setValue(BlockStateProperties.FACING, Direction.NORTH))
     }
@@ -72,10 +79,13 @@ class Inscriber: Block(Properties.of(Material.METAL).noOcclusion().harvestLevel(
     }
 
     override fun createBlockStateDefinition(pBuilder: StateContainer.Builder<Block, BlockState>) {
-        pBuilder.add(BlockStateProperties.FACING)
+        pBuilder.add(IInscriber.InscriberStates.standardVariant)
     }
 
-    override fun getStateForPlacement(pContext: BlockItemUseContext): BlockState? = defaultBlockState().setValue(BlockStateProperties.FACING, pContext.nearestLookingDirection.opposite)
+    override fun getStateForPlacement(pContext: BlockItemUseContext): BlockState? = defaultBlockState().setValue(
+        IInscriber.InscriberStates.standardVariant,
+        pContext.nearestLookingDirection.opposite
+    )
 
     override fun onRemove(
         pState: BlockState,
@@ -99,4 +109,8 @@ class Inscriber: Block(Properties.of(Material.METAL).noOcclusion().harvestLevel(
     ): VoxelShape {
         return xVoxel
     }
+
+    override fun getSize(): Int = 36
+
+    override fun getType(): IInscriber.InscriberType = IInscriber.InscriberType.STANDARD_INSCRIBER
 }
