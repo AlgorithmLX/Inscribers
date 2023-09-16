@@ -10,20 +10,18 @@ import net.minecraft.inventory.container.ContainerType
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.tileentity.TileEntityType
-import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.common.extensions.IForgeContainerType
 import net.minecraftforge.fml.RegistryObject
-import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import net.minecraftforge.registries.DeferredRegister
 import net.minecraftforge.registries.ForgeRegistries
 import net.minecraftforge.registries.IForgeRegistry
 import net.minecraftforge.registries.IForgeRegistryEntry
 
-@Mod.EventBusSubscriber(value = [Dist.DEDICATED_SERVER, Dist.CLIENT], modid = ModId, bus = Mod.EventBusSubscriber.Bus.MOD)
-@Suppress("MemberVisibilityCanBePrivate", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+@Suppress("MemberVisibilityCanBePrivate", "Nullability_mismatch_based_on_java_annotations")
 object Register {
-    private val tab = InscriberTab.create(ModId)
+    @JvmField
+    val tab = InscriberTab.create(ModId)
     private const val INSCRIBER_ID = "inscriber"
 
     val recipes = deferred(ForgeRegistries.RECIPE_SERIALIZERS)

@@ -12,7 +12,7 @@
 		"7": "block/lapis_block",
 		"8": "block/redstone_block",
 		"9": "block/iron_block",
-		"particle": "inscribers:block/inscriber"
+		"particle": "#3"
 	},
 	"elements": [
 		{

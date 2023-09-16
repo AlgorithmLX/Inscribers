@@ -1,13 +1,10 @@
 package com.algorithmlx.inscribers.block
 
-import com.algorithmlx.inscribers.api.block.ContainerBlockEntity
-import com.algorithmlx.inscribers.api.block.IInscriber
-import com.algorithmlx.inscribers.api.block.IInscriberBlockEntity
-import com.algorithmlx.inscribers.api.handler.SidedItemHandlerModifiable
-import com.algorithmlx.inscribers.api.handler.StackHandler
+import com.algorithmlx.inscribers.api.block.*
+import com.algorithmlx.inscribers.api.handler.*
+import com.algorithmlx.inscribers.container.menu.InscriberContainerMenu
 import com.algorithmlx.inscribers.energy.InscribersEnergyStorage
-import com.algorithmlx.inscribers.init.registry.InscribersRecipeTypes
-import com.algorithmlx.inscribers.init.registry.Register
+import com.algorithmlx.inscribers.init.registry.*
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
 import com.algorithmlx.inscribers.server.InscriberDirectionSettingsServer
 import net.minecraft.block.BlockState
@@ -23,8 +20,7 @@ import net.minecraftforge.items.CapabilityItemHandler
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.TestOnly
 
-class InscriberBlockEntity: ContainerBlockEntity(Register.inscriberBlockEntity.get()),
-    IInscriberBlockEntity {
+class InscriberBlockEntity: ContainerBlockEntity(Register.inscriberBlockEntity.get()), IInscriberBlockEntity {
     val energy: InscribersEnergyStorage = InscribersEnergyStorage(this.getInscriber().getEnergy()) {}
     private val inventory = StackHandler(this.getInscriber().getSize(), this::change)
     private var isWorking = false
@@ -82,8 +78,8 @@ class InscriberBlockEntity: ContainerBlockEntity(Register.inscriberBlockEntity.g
         super.save(pCompound)
         pCompound.putInt("InscriberProgress", this.progress)
         pCompound.putInt("InscriberEnergy", this.energy.energyStored)
-        pCompound.putInt("InscriberExitSide", InscriberDirectionSettingsServer.data)
-        pCompound.putBoolean("EnableInscriberExitSide", InscriberDirectionSettingsServer.enabled)
+        pCompound.putInt("InscriberExitSide", this.getData())
+        pCompound.putBoolean("EnableInscriberInjecting", this.getInjecting())
         return pCompound
     }
 
@@ -91,10 +87,12 @@ class InscriberBlockEntity: ContainerBlockEntity(Register.inscriberBlockEntity.g
         super.load(state, tag)
         this.progress = tag.getInt("InscriberProgress")
         this.energy.setStored(tag.getInt("InscriberEnergy"))
+        this.setData(tag.getInt("InscriberExitSide"))
+        this.setInjecting(tag.getBoolean("EnableInscriberInjecting"))
     }
 
-    override fun createMenu(windowId : Int, inventory : PlayerInventory, player : PlayerEntity): Container? =
-        Register.inscriberContainerMenu.get().create(windowId, inventory)
+    override fun createMenu(windowId : Int, inventory : PlayerInventory, player : PlayerEntity): Container =
+        InscriberContainerMenu(windowId, inventory, this::usedByPlayer, net.minecraft.util.IntArray(0), this.blockPos)
 
     override fun <T> getCapability(cap: Capability<T>, side: Direction?): LazyOptional<T> {
         if (cap == CapabilityEnergy.ENERGY) return energyLazy.cast()
@@ -140,4 +138,16 @@ class InscriberBlockEntity: ContainerBlockEntity(Register.inscriberBlockEntity.g
     fun getTime(): Int = if (this.recipe == null) 0 else this.recipe!!.time
 
     override fun getInscriber(): IInscriber = Register.inscriberBlock.get()
+
+    fun getData(): Int = InscriberDirectionSettingsServer.data
+
+    fun getInjecting(): Boolean = InscriberDirectionSettingsServer.enabled
+
+    fun setData(value: Int) {
+        InscriberDirectionSettingsServer.data = value
+    }
+
+    fun setInjecting(value: Boolean) {
+        InscriberDirectionSettingsServer.enabled = value
+    }
 }

@@ -8,6 +8,7 @@ import net.minecraft.block.material.Material
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.inventory.InventoryHelper
+import net.minecraft.inventory.container.INamedContainerProvider
 import net.minecraft.item.BlockItemUseContext
 import net.minecraft.state.StateContainer
 import net.minecraft.util.ActionResultType
@@ -71,7 +72,7 @@ class Inscriber: Block(
         if (!pLevel.isClientSide) {
             val blockEntity = pLevel.getBlockEntity(pPos)
             if (blockEntity is InscriberBlockEntity) {
-                NetworkHooks.openGui(pPlayer as ServerPlayerEntity, blockEntity, pPos)
+                NetworkHooks.openGui(pPlayer as ServerPlayerEntity, blockEntity as INamedContainerProvider, pPos)
             }
         }
         return ActionResultType.SUCCESS
@@ -83,7 +84,7 @@ class Inscriber: Block(
 
     override fun getStateForPlacement(pContext: BlockItemUseContext): BlockState? = defaultBlockState().setValue(
         IInscriber.InscriberStates.standardVariant,
-        pContext.nearestLookingDirection.opposite
+        pContext.horizontalDirection.clockWise
     )
 
     override fun onRemove(

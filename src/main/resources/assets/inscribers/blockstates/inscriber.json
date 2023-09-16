@@ -1,17 +1,17 @@
 {
   "variants": {
-    "standard_model=north": {
+    "facing=north": {
       "model": "inscribers:block/inscriber"
     },
-    "standard_model=east": {
+    "facing=east": {
       "model": "inscribers:block/inscriber",
       "y": 90
     },
-    "standard_model=south": {
+    "facing=south": {
       "model": "inscribers:block/inscriber",
       "y": 180
     },
-    "standard_model=west": {
+    "facing=west": {
       "model": "inscribers:block/inscriber",
       "y": 270
     }
