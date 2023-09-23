@@ -106,3 +106,5 @@ fun ModLoadingContext.clientConfig(spec: ForgeConfigSpec, id: String) {
 fun ModLoadingContext.serverConfig(spec: ForgeConfigSpec, id: String) {
     this.registerConfig(ModConfig.Type.SERVER, spec, id)
 }
+
+fun intArray(size: Int) = net.minecraft.util.IntArray(size)

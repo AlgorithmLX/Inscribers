@@ -11,6 +11,7 @@ import net.minecraft.inventory.InventoryHelper
 import net.minecraft.inventory.container.INamedContainerProvider
 import net.minecraft.item.BlockItemUseContext
 import net.minecraft.state.StateContainer
+import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ActionResultType
 import net.minecraft.util.Direction
 import net.minecraft.util.Hand
@@ -26,7 +27,7 @@ import net.minecraftforge.fml.network.NetworkHooks
 @Suppress("override_deprecation")
 class Inscriber: Block(
     Properties.of(Material.METAL)
-        .noOcclusion()
+//        .noOcclusion()
         .harvestLevel(3)
         .harvestTool(ToolType.PICKAXE)
         .requiresCorrectToolForDrops()
@@ -71,12 +72,19 @@ class Inscriber: Block(
     ): ActionResultType {
         if (!pLevel.isClientSide) {
             val blockEntity = pLevel.getBlockEntity(pPos)
+
             if (blockEntity is InscriberBlockEntity) {
                 NetworkHooks.openGui(pPlayer as ServerPlayerEntity, blockEntity as INamedContainerProvider, pPos)
             }
         }
+
         return ActionResultType.SUCCESS
     }
+
+    override fun hasTileEntity(state: BlockState?): Boolean = true
+
+    override fun createTileEntity(state: BlockState?, world: IBlockReader?): TileEntity? =
+        InscriberBlockEntity()
 
     override fun createBlockStateDefinition(pBuilder: StateContainer.Builder<Block, BlockState>) {
         pBuilder.add(IInscriber.InscriberStates.standardVariant)

@@ -4,10 +4,8 @@
   "package": "com.algorithmlx.inscribers.mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "inscribers.refmap.json",
-  "mixins": [
-  ],
-  "client": [
-  ],
+  "mixins": [],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   }

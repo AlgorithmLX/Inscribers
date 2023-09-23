@@ -2,6 +2,7 @@ package com.algorithmlx.inscribers.block
 
 import com.algorithmlx.inscribers.api.block.*
 import com.algorithmlx.inscribers.api.handler.*
+import com.algorithmlx.inscribers.api.intArray
 import com.algorithmlx.inscribers.container.menu.InscriberContainerMenu
 import com.algorithmlx.inscribers.energy.InscribersEnergyStorage
 import com.algorithmlx.inscribers.init.registry.*
@@ -92,7 +93,7 @@ class InscriberBlockEntity: ContainerBlockEntity(Register.inscriberBlockEntity.g
     }
 
     override fun createMenu(windowId : Int, inventory : PlayerInventory, player : PlayerEntity): Container =
-        InscriberContainerMenu(windowId, inventory, this::usedByPlayer, net.minecraft.util.IntArray(0), this.blockPos)
+        InscriberContainerMenu(windowId, inventory, this::usedByPlayer, intArray(0), this.blockPos)
 
     override fun <T> getCapability(cap: Capability<T>, side: Direction?): LazyOptional<T> {
         if (cap == CapabilityEnergy.ENERGY) return energyLazy.cast()
