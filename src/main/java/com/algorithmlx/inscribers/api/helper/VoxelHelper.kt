@@ -19,12 +19,15 @@ class VoxelHelper private constructor() {
         return this
     }
 
-    fun qb(xMin: Double, yMin: Double, zMin: Double, xMax: Double, yMax: Double, zMax: Double): VoxelHelper {
-        val shape = Block.box(xMin, yMin, zMin, xMax, yMax, zMax)
+    fun qb(xMin: Number, yMin: Number, zMin: Number, xMax: Number, yMax: Number, zMax: Number): VoxelHelper {
+        val shape = Block.box(xMin.toDouble(), yMin.toDouble(), zMin.toDouble(), xMax.toDouble(), yMax.toDouble(), zMax.toDouble())
         return this.shape(shape)
     }
 
-    fun of(): VoxelShape = this.last!!
+    fun of(): VoxelShape = if (this.last != null)
+        this.last!!
+    else
+        Block.box(0.0, 0.0, 0.0, 16.0, 16.0, 16.0)
 
     companion object {
         @JvmStatic

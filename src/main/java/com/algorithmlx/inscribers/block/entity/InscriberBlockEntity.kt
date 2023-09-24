@@ -1,4 +1,4 @@
-package com.algorithmlx.inscribers.block
+package com.algorithmlx.inscribers.block.entity
 
 import com.algorithmlx.inscribers.api.block.*
 import com.algorithmlx.inscribers.api.handler.*
@@ -96,18 +96,21 @@ class InscriberBlockEntity: ContainerBlockEntity(Register.inscriberBlockEntity.g
         InscriberContainerMenu(windowId, inventory, this::usedByPlayer, intArray(0), this.blockPos)
 
     override fun <T> getCapability(cap: Capability<T>, side: Direction?): LazyOptional<T> {
-        if (cap == CapabilityEnergy.ENERGY) return energyLazy.cast()
+        if (cap == CapabilityEnergy.ENERGY) return this.energyLazy.cast()
 
-        if (side != null && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            val sideData = InscriberDirectionSettingsServer.data
+//        if (side != null && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+//            val sideData = InscriberDirectionSettingsServer.data
+//
+//            if (sideData == 0 && side == Direction.DOWN) return this.inventoryCap[sideData]!!.cast()
+//            else if (sideData == 1 && side == Direction.UP) return this.inventoryCap[sideData]!!.cast()
+//            else if (sideData == 2 && side == Direction.NORTH) return this.inventoryCap[sideData]!!.cast()
+//            else if (sideData == 3 && side == Direction.SOUTH) return this.inventoryCap[sideData]!!.cast()
+//            else if (sideData == 4 && side == Direction.WEST) return this.inventoryCap[sideData]!!.cast()
+//            else if (sideData == 5 && side == Direction.EAST) return this.inventoryCap[sideData]!!.cast()
+//        }
 
-            if (sideData == 0 && side == Direction.DOWN) return this.inventoryCap[sideData]!!.cast()
-            else if (sideData == 1 && side == Direction.UP) return this.inventoryCap[sideData]!!.cast()
-            else if (sideData == 2 && side == Direction.NORTH) return this.inventoryCap[sideData]!!.cast()
-            else if (sideData == 3 && side == Direction.SOUTH) return this.inventoryCap[sideData]!!.cast()
-            else if (sideData == 4 && side == Direction.WEST) return this.inventoryCap[sideData]!!.cast()
-            else if (sideData == 5 && side == Direction.EAST) return this.inventoryCap[sideData]!!.cast()
-        }
+        if (!this.isRemoved && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            return this.itemCap.cast()
 
         return super.getCapability(cap, side)
     }

@@ -2,7 +2,7 @@ package com.algorithmlx.inscribers.init.registry
 
 import com.algorithmlx.inscribers.ModId
 import com.algorithmlx.inscribers.block.Inscriber
-import com.algorithmlx.inscribers.block.InscriberBlockEntity
+import com.algorithmlx.inscribers.block.entity.InscriberBlockEntity
 import com.algorithmlx.inscribers.container.menu.InscriberContainerMenu
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
 import net.minecraft.block.Block

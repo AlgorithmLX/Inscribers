@@ -16,7 +16,7 @@ import net.minecraftforge.items.CapabilityItemHandler
 import net.minecraftforge.items.IItemHandler
 
 abstract class ContainerBlockEntity(blockEntityType: TileEntityType<*>): TileEntity(blockEntityType) {
-    private val lazyCap: LazyOptional<StackHandler> = LazyOptional.of(::getInv)
+    protected val itemCap: LazyOptional<StackHandler> = LazyOptional.of(::getInv)
 
     abstract fun getInv(): StackHandler
 
@@ -40,7 +40,7 @@ abstract class ContainerBlockEntity(blockEntityType: TileEntityType<*>): TileEnt
 
     override fun <T : Any?> getCapability(cap: Capability<T>, side: Direction?): LazyOptional<T> {
         if (!this.isRemoved && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, this.lazyCap as LazyOptional<IItemHandler>)
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, this.itemCap.cast())
 
         return super.getCapability(cap, side)
     }

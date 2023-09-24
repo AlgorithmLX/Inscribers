@@ -1,7 +1,7 @@
 package com.algorithmlx.inscribers.client.render
 
 import com.algorithmlx.inscribers.api.renderItem
-import com.algorithmlx.inscribers.block.InscriberBlockEntity
+import com.algorithmlx.inscribers.block.entity.InscriberBlockEntity
 import com.mojang.blaze3d.matrix.MatrixStack
 import net.minecraft.client.renderer.IRenderTypeBuffer
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer

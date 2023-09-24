@@ -42,9 +42,9 @@ interface IInscriber {
     }
 
     object InscriberStates {
-        val standardVariant = horizontal("standard_model")
+        val standardVariant = horizontal()
 
-        private fun horizontal(id: String): DirectionProperty = HorizontalBlock.FACING
+        private fun horizontal(): DirectionProperty = HorizontalBlock.FACING
 
         private fun direction(id: String, vararg direction: Direction): DirectionProperty = DirectionProperty.create(
             id,

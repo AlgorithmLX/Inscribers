@@ -9,6 +9,7 @@ import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.Widget
 import net.minecraft.client.renderer.IRenderTypeBuffer
 import net.minecraft.client.renderer.model.ItemCameraTransforms
+import net.minecraft.client.renderer.texture.TextureManager
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.util.ResourceLocation
