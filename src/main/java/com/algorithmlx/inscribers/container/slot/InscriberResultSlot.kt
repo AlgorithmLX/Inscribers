@@ -21,9 +21,9 @@ class InscriberResultSlot(
     override fun onTake(pPlayer: PlayerEntity, pStack: ItemStack): ItemStack {
         ForgeHooks.setCraftingPlayer(pPlayer)
 
-        val remain =pPlayer.level.recipeManager.getRemainingItemsFor(InscribersRecipeTypes.inscriberRecipe, this.containerGlobal, pPlayer.level)
+        val remain = pPlayer.level.recipeManager.getRemainingItemsFor(InscribersRecipeTypes.inscriberRecipe, this.containerGlobal, pPlayer.level)
 
-        for (i in 0 ..< remain.size) {
+        for (i in 0 until remain.size) {
             var slotItem = this.containerGlobal.getItem(i)
             val remStack = remain[i]
 

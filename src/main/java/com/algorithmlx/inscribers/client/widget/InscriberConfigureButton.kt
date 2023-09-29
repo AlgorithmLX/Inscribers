@@ -21,7 +21,7 @@ class InscriberConfigureButton(
     onPress = {
         if (getActivated()) {
             setActivated(false)
-            InscribersNetwork.sendToServer(SDirectionPack(id, getActivated()))
+            InscriberDirectionSettings.sendChanges(id, getActivated())
         }
 
         if (getActivated(id)) {

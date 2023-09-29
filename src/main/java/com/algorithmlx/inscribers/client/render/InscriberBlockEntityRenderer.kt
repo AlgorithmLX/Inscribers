@@ -24,22 +24,21 @@ class InscriberBlockEntityRenderer(pContext: TileEntityRendererDispatcher) : Til
     ) {
         val inv = pBlockEntity.getInv()
 
-        for (index in 1 until 36) {
-            val stack = inv.getStackInSlot(index)
-            if (!stack.isEmpty)
-                for (i in 0 until 6)
-                    for (j in 0 until 6)
-                        pPoseStack.renderItem(
-                            stack,
-                            11.25 - i * 1.5,
-                            4.8,
-                            11.3 - j * 1.5,
-                            pCombinedLight,
-                            pCombinedOverlay,
-                            pBuffer
-                        )
-
-
+        for (i in 0 until 6) {
+            for (j in 0 until 6) {
+                val stack = inv.getStackInSlot(i * j)
+                if (!stack.isEmpty) {
+                    pPoseStack.renderItem(
+                        stack,
+                        11.25 - i * 1.5,
+                        4.8,
+                        11.3 - j * 1.5,
+                        pCombinedLight,
+                        pCombinedOverlay,
+                        pBuffer
+                    )
+                }
+            }
         }
 
         val resultStack = inv.getStackInSlot(0)

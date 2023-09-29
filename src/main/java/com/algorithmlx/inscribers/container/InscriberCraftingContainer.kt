@@ -14,7 +14,7 @@ class InscriberCraftingContainer(
     override fun getContainerSize(): Int = this.handler.slots
 
     override fun isEmpty(): Boolean {
-        for (i in 0 ..< this.containerSize) {
+        for (i in 0 until this.containerSize) {
             if (!this.handler.getStackInSlot(i).isEmpty) return false
         }
 

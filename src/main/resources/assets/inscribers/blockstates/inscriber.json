@@ -1,18 +1,18 @@
 {
   "variants": {
-    "facing=north": {
+    "inscriber_classic=north": {
       "model": "inscribers:block/inscriber",
       "y": 90
     },
-    "facing=east": {
+    "inscriber_classic=east": {
       "model": "inscribers:block/inscriber",
       "y": 180
     },
-    "facing=south": {
+    "inscriber_classic=south": {
       "model": "inscribers:block/inscriber",
       "y": 270
     },
-    "facing=west": {
+    "inscriber_classic=west": {
       "model": "inscribers:block/inscriber"
     }
   }

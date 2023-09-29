@@ -2,10 +2,12 @@ package com.algorithmlx.inscribers.api.block
 
 import com.algorithmlx.inscribers.api.translate
 import com.algorithmlx.inscribers.init.config.InscribersConfig
+import com.google.common.collect.Lists
 import net.minecraft.block.HorizontalBlock
 import net.minecraft.state.DirectionProperty
 import net.minecraft.util.Direction
 import net.minecraft.util.text.TranslationTextComponent
+import java.util.function.Predicate
 import kotlin.math.sqrt
 
 interface IInscriber {
@@ -42,13 +44,21 @@ interface IInscriber {
     }
 
     object InscriberStates {
-        val standardVariant = horizontal()
+        val standardVariant = horizontal("inscriber_classic")
+        var rotated = direction("inscriber_rot", Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, Direction.UP, Direction.DOWN)
 
-        private fun horizontal(): DirectionProperty = HorizontalBlock.FACING
+        fun horizontal(id: String): DirectionProperty = direction(id, Direction.Plane.HORIZONTAL)
 
-        private fun direction(id: String, vararg direction: Direction): DirectionProperty = DirectionProperty.create(
+        fun direction(id: String, vararg direction: Direction): DirectionProperty = DirectionProperty.create(
             id,
             *direction
         )
+
+        fun direction(id: String, filter: Predicate<Direction>): DirectionProperty = DirectionProperty.create(
+            id,
+            filter
+        )
+
+        fun direction(id: String, values: Collection<Direction>): DirectionProperty = DirectionProperty.create(id, values)
     }
 }

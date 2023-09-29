@@ -37,7 +37,6 @@ object InscriberClientSetup {
     @Synchronized
     private fun tooltipEvent(evt: ItemTooltipEvent) {
         val stack = evt.itemStack
-        val player = evt.player ?: return
         val tooltip = evt.toolTip
         val item = stack.item
 
@@ -50,15 +49,9 @@ object InscriberClientSetup {
                 val type = block.getType().getTranslationName()
                 val capacity = block.getEnergy()
 
-                synchronized(player) {
-                    if (player.isShiftKeyDown) {
-                        tooltip.add(translate("api", "container", x, y))
-                        tooltip.add(translate("api", "capacity", capacity))
-                        tooltip.add(translate("api", "type", type))
-                    } else {
-                        tooltip.add(translate("api", "shift"))
-                    }
-                }
+                tooltip.add(translate("api", "container", x, y))
+                tooltip.add(translate("api", "capacity", capacity))
+                tooltip.add(translate("api", "type", type))
             }
         }
     }
