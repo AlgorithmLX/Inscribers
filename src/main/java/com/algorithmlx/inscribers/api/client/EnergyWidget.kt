@@ -9,7 +9,8 @@ import net.minecraft.client.gui.widget.Widget
 import net.minecraft.util.text.StringTextComponent
 import net.minecraftforge.energy.IEnergyStorage
 
-class EnergyWidget(x: Int, y: Int, private val storage: IEnergyStorage): Widget(x, y, 14, 78, StringTextComponent("Energy Bar")) {
+class EnergyWidget(x: Int, y: Int, private val storage: IEnergyStorage):
+    Widget(x, y, 14, 78, StringTextComponent("Energy Bar")) {
     private val widgetTexture = reloc("textures/gui/widget/energy.png")
 
     override fun render(pPoseStack: MatrixStack, pMouseX: Int, pMouseY: Int, pPartialTicks: Float) {

@@ -1,6 +1,6 @@
 package com.algorithmlx.inscribers.network.packet
 
-import com.algorithmlx.inscribers.server.InscriberDirectionSettingsServer
+import com.algorithmlx.inscribers.server.InscriberDirectionSettings
 import net.minecraft.network.PacketBuffer
 import net.minecraftforge.fml.network.NetworkEvent
 import java.util.function.Supplier
@@ -32,8 +32,8 @@ class SDirectionPack {
     fun handle(ctx: Supplier<NetworkEvent.Context>) {
         val context = ctx.get()
         context.enqueueWork {
-            InscriberDirectionSettingsServer.data = this.data
-            InscriberDirectionSettingsServer.enabled = this.enabled
+            InscriberDirectionSettings.data = this.data
+            InscriberDirectionSettings.enabled = this.enabled
         }
     }
 }

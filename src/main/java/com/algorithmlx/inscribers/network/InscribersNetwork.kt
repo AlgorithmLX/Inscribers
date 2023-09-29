@@ -1,9 +1,7 @@
 package com.algorithmlx.inscribers.network
 
-import com.algorithmlx.inscribers.network.packet.SDirectionPack
 import com.algorithmlx.inscribers.reloc
 import net.minecraft.entity.player.ServerPlayerEntity
-import net.minecraftforge.fml.network.NetworkDirection
 import net.minecraftforge.fml.network.NetworkRegistry
 import net.minecraftforge.fml.network.PacketDistributor
 import net.minecraftforge.fml.network.simple.SimpleChannel
@@ -23,11 +21,11 @@ object InscribersNetwork {
         )
         this.simpleChannel = localChannel
 
-        localChannel.messageBuilder(SDirectionPack::class.java, nextId(), NetworkDirection.PLAY_TO_SERVER)
-            .decoder(SDirectionPack::decode)
-            .encoder(SDirectionPack::encode)
-            .consumer(SDirectionPack::handle)
-            .add()
+//        localChannel.messageBuilder(SDirectionPack::class.java, nextId(), NetworkDirection.PLAY_TO_SERVER)
+//            .decoder(SDirectionPack::decode)
+//            .encoder(SDirectionPack::encode)
+//            .consumer(SDirectionPack::handle)
+//            .add()
     }
 
     fun <MSG> sendToServer(message: MSG) {

@@ -1,13 +1,13 @@
-package com.algorithmlx.inscribers.energy
+package com.algorithmlx.inscribers.api.energy
 
 import net.minecraftforge.energy.EnergyStorage
 
-class InscribersEnergyStorage(
+class InscribersEnergyStorageAPI(
     capacity: Int,
     maxReceive: Int = capacity,
     maxExtract: Int = capacity,
     inscriberEnergy: Int = 0,
-    private val runnable: Runnable?
+    private val runnable: Runnable? = Runnable {}
 ): EnergyStorage(capacity, maxReceive, maxExtract, inscriberEnergy) {
     override fun receiveEnergy(maxReceive: Int, simulate: Boolean): Int {
         val received = super.receiveEnergy(maxReceive, simulate)

@@ -27,23 +27,19 @@ class InscriberMenuScreen(
 
     override fun init() {
         super.init()
-//        this.addButton(InscriberConfigureButton(196, 54, 0))
-//        this.addButton(InscriberConfigureButton(196, 34, 1))
-//        this.addButton(InscriberConfigureButton(196, 44, 2))
-//        this.addButton(InscriberConfigureButton(206, 54, 3))
-//        this.addButton(InscriberConfigureButton(206, 44, 4))
-//        this.addButton(InscriberConfigureButton(186, 44, 5))
 
         this.blockEntity = this.getBlockEntity()
 
-        if (this.blockEntity != null) this.addWidget(EnergyWidget(11, 31, this.blockEntity!!.energy))
+        if (this.blockEntity != null) {
+            this.addWidget(EnergyWidget(11, 31, this.blockEntity!!.energy))
+        }
     }
 
     override fun renderLabels(pPoseStack: MatrixStack, pX: Int, pY: Int) {
-        val title = this.getTitle()
-        this.font.draw(pPoseStack, title, 7f, 7f, 4210752)
+//        val title = this.getTitle()
+//        this.font.draw(pPoseStack, title, 7f, 7f, 4210752)
         val container = this.inventory.displayName
-        this.font.draw(pPoseStack, container, 7f, this.imageHeight - 94f, 4210752)
+        this.font.draw(pPoseStack, container, 7f, this.imageHeight - 88f, 4210752)
     }
 
     private fun getBlockEntity(): InscriberBlockEntity? {

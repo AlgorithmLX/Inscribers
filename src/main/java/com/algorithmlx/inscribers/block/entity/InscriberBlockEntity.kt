@@ -4,10 +4,10 @@ import com.algorithmlx.inscribers.api.block.*
 import com.algorithmlx.inscribers.api.handler.*
 import com.algorithmlx.inscribers.api.intArray
 import com.algorithmlx.inscribers.container.menu.InscriberContainerMenu
-import com.algorithmlx.inscribers.energy.InscribersEnergyStorage
+import com.algorithmlx.inscribers.api.energy.InscribersEnergyStorageAPI
 import com.algorithmlx.inscribers.init.registry.*
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
-import com.algorithmlx.inscribers.server.InscriberDirectionSettingsServer
+import com.algorithmlx.inscribers.server.InscriberDirectionSettings
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
@@ -22,17 +22,16 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.TestOnly
 
 class InscriberBlockEntity: ContainerBlockEntity(Register.inscriberBlockEntity.get()), IInscriberBlockEntity {
-    val energy: InscribersEnergyStorage = InscribersEnergyStorage(this.getInscriber().getEnergy()) {}
-    private val inventory = StackHandler(this.getInscriber().getSize(), this::change)
+    val energy: InscribersEnergyStorageAPI
+    private val inventory: StackHandler
     private var isWorking = false
 
+    init {
+        energy = InscribersEnergyStorageAPI(this.getInscriber().getEnergy())
+        inventory = StackHandler(this.getInscriber().getSize(), this::change)
+    }
+
     private val energyLazy = LazyOptional.of(this::energy)
-    private val inventoryCap = SidedItemHandlerModifiable.create(
-        this.inventory,
-        arrayOf(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST),
-        null,
-        this::canExtractBySlot
-    )
 
     @TestOnly
     @ApiStatus.Experimental
@@ -48,12 +47,12 @@ class InscriberBlockEntity: ContainerBlockEntity(Register.inscriberBlockEntity.g
         val level = this.getLevel()
         if (level == null || level.isClientSide) return
 
+        var change = false
+
         if (this.recipe == null || !this.recipe!!.matches(inventory)) {
             val locRecipe = level.recipeManager.getRecipeFor(InscribersRecipeTypes.inscriberRecipe, this.inventory.toContainer(), level)
                 .orElse(null)
-            if (locRecipe is InscriberRecipe) {
-                this.recipe = locRecipe
-            }
+            this.recipe = if (locRecipe is InscriberRecipe) locRecipe else null
         }
 
         if (this.recipe != null) {
@@ -65,14 +64,19 @@ class InscriberBlockEntity: ContainerBlockEntity(Register.inscriberBlockEntity.g
                 this.energy.extractEnergy(needsEnergy, simulate = false)
 
                 if (this.progress >= resultTime) {
-                    for (i in 1 until 36) this.inventory.extract(i, 1, simulate = false)
+                    for (i in 1 ..< 36) this.inventory.extract(i, 1, simulate = false)
                     this.inventory.setStackInSlot(0, this.recipe!!.result(this.inventory))
                     this.progress = 0
                     this.isWorking = false
-                    this.change()
+                    change = true
                 }
             }
+        } else {
+            if (this.progress > 0) this.progress = 0
+            change = true
         }
+
+        if (change) this.change()
     }
 
     override fun save(pCompound: CompoundNBT): CompoundNBT {
@@ -124,8 +128,8 @@ class InscriberBlockEntity: ContainerBlockEntity(Register.inscriberBlockEntity.g
         if (direction == null)
             return true
         if (slot == 0) {
-            val side = InscriberDirectionSettingsServer.data
-            val enabled = InscriberDirectionSettingsServer.enabled
+            val side = InscriberDirectionSettings.data
+            val enabled = InscriberDirectionSettings.enabled
 
             if (side == 0 && direction == Direction.DOWN) return enabled
             else if (side == 1 && direction == Direction.UP) return enabled
@@ -143,15 +147,15 @@ class InscriberBlockEntity: ContainerBlockEntity(Register.inscriberBlockEntity.g
 
     override fun getInscriber(): IInscriber = Register.inscriberBlock.get()
 
-    fun getData(): Int = InscriberDirectionSettingsServer.data
+    fun getData(): Int = InscriberDirectionSettings.data
 
-    fun getInjecting(): Boolean = InscriberDirectionSettingsServer.enabled
+    fun getInjecting(): Boolean = InscriberDirectionSettings.enabled
 
     fun setData(value: Int) {
-        InscriberDirectionSettingsServer.data = value
+        InscriberDirectionSettings.data = value
     }
 
     fun setInjecting(value: Boolean) {
-        InscriberDirectionSettingsServer.enabled = value
+        InscriberDirectionSettings.enabled = value
     }
 }
