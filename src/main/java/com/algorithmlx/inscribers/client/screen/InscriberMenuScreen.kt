@@ -55,7 +55,7 @@ class InscriberMenuScreen(
         return null
     }
 
-    fun getProgress(): Int = if (this.blockEntity != null) this.blockEntity!!.getProgress() else 0
+    fun getProgress(): Int = if (this.blockEntity != null) this.blockEntity!!.progress else 0
 
     fun getOperationTime(): Int = if (this.blockEntity != null) this.blockEntity!!.getTime() else 0
 

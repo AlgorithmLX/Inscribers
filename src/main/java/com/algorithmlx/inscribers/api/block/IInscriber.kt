@@ -6,6 +6,7 @@ import com.google.common.collect.Lists
 import net.minecraft.block.HorizontalBlock
 import net.minecraft.state.DirectionProperty
 import net.minecraft.util.Direction
+import net.minecraft.util.text.ITextComponent
 import net.minecraft.util.text.TranslationTextComponent
 import java.util.function.Predicate
 import kotlin.math.sqrt
@@ -40,7 +41,7 @@ interface IInscriber {
     enum class InscriberType {
         STANDARD_INSCRIBER;
 
-        fun getTranslationName(): TranslationTextComponent = translate("api.type", this.name.lowercase()) as TranslationTextComponent
+        fun getTranslationName(): ITextComponent = translate("api.type", this.name.lowercase())
     }
 
     object InscriberStates {

@@ -1,5 +1,6 @@
 package com.algorithmlx.inscribers.container.menu
 
+import com.algorithmlx.inscribers.LOGGER
 import com.algorithmlx.inscribers.api.handler.StackHandlerSlot
 import com.algorithmlx.inscribers.block.entity.InscriberBlockEntity
 import com.algorithmlx.inscribers.container.InscriberCraftingContainer
@@ -37,11 +38,14 @@ class InscriberContainerMenu(
         val inv = InscriberBlockEntity().getInv()
         val craftInventory: IInventory = InscriberCraftingContainer(this, inv, 36)
 
-        this.addSlot(InscriberResultSlot(this, craftInventory, this.result, 0, 79, 162))
+        this.addSlot(InscriberResultSlot(this, craftInventory, this.result, 36, 79, 162))
 
-        for (i in 0 until 6)
-            for (j in 0 until 6)
-                this.addSlot(StackHandlerSlot(inv, i + j * 6, 34 + i * 18, 17 + j * 18))
+        for (j in 0 until 6) {
+            for (k in 0 until 6) {
+                val id = k + j * 6
+                this.addSlot(StackHandlerSlot(inv, id, 34 + j * 18, 17 + k * 18))
+            }
+        }
 
         this.slotsChanged(craftInventory)
         this.addDataSlots(data)
