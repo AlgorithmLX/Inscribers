@@ -11,6 +11,15 @@ class InscriberCraftingContainer(
     private val handler: StackHandler,
     size: Int
 ): CraftingInventory(containerMenu, size, size) {
+    /*
+
+    @Override
+    public int getContainerSize() {
+        return this.handler.getSlots()
+    }
+
+    */
+
     override fun getContainerSize(): Int = this.handler.slots
 
     override fun isEmpty(): Boolean {
@@ -24,7 +33,7 @@ class InscriberCraftingContainer(
     override fun getItem(pIndex: Int): ItemStack = this.handler.getStackInSlot(pIndex)
 
     override fun removeItem(pIndex: Int, pCount: Int): ItemStack {
-        val stack =  this.handler.extract(pIndex, pCount, false)
+        val stack = this.handler.extract(pIndex, pCount, false)
 
         this.containerMenu.slotsChanged(this)
 

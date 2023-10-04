@@ -152,7 +152,7 @@ class Inscriber: Block(
             val blockEntity = pLevel.getBlockEntity(pPos)
 
             if (blockEntity is InscriberBlockEntity) {
-                NetworkHooks.openGui(pPlayer as ServerPlayerEntity, blockEntity as INamedContainerProvider, pPos)
+                NetworkHooks.openGui(pPlayer as ServerPlayerEntity, blockEntity, pPos)
             }
         }
 
@@ -161,7 +161,7 @@ class Inscriber: Block(
 
     override fun hasTileEntity(state: BlockState?): Boolean = true
 
-    override fun createTileEntity(state: BlockState?, world: IBlockReader?): TileEntity? =
+    override fun createTileEntity(state: BlockState?, world: IBlockReader?): TileEntity =
         InscriberBlockEntity()
 
     override fun createBlockStateDefinition(pBuilder: StateContainer.Builder<Block, BlockState>) {
@@ -180,11 +180,14 @@ class Inscriber: Block(
         pNewState: BlockState,
         pIsMoving: Boolean
     ) {
-        val blockEntity = pLevel.getBlockEntity(pPos)
+        if (pState.block != pNewState.block) {
+            val blockEntity = pLevel.getBlockEntity(pPos)
 
-        if (blockEntity is InscriberBlockEntity) {
-            InventoryHelper.dropContents(pLevel, pPos, blockEntity.getInv().getStackList())
+            if (blockEntity is InscriberBlockEntity)
+                InventoryHelper.dropContents(pLevel, pPos, blockEntity.getInv().getStackList())
         }
+
+        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving)
     }
 
     override fun getShape(

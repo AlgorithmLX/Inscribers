@@ -7,7 +7,7 @@ import net.minecraft.util.NonNullList
 import net.minecraftforge.items.ItemStackHandler
 import org.apache.commons.lang3.ArrayUtils
 
-class StackHandler(size: Int, private val contextChanged: Runnable? = null): ItemStackHandler(size) {
+class StackHandler(size: Int, private val contextChanged: Runnable = Runnable { } ): ItemStackHandler(size) {
     private var slotSize: MutableMap<Int, Int> = mutableMapOf()
     private var validator: ((Int, ItemStack) -> Boolean)? = null
     private var maxStackSize = 64
