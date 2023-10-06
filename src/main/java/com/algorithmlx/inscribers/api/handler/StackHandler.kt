@@ -7,7 +7,7 @@ import net.minecraft.util.NonNullList
 import net.minecraftforge.items.ItemStackHandler
 import org.apache.commons.lang3.ArrayUtils
 
-class StackHandler(size: Int, private val contextChanged: Runnable = Runnable { } ): ItemStackHandler(size) {
+class StackHandler(size: Int, private val contextChanged: Runnable? = null): ItemStackHandler(size) {
     private var slotSize: MutableMap<Int, Int> = mutableMapOf()
     private var validator: ((Int, ItemStack) -> Boolean)? = null
     private var maxStackSize = 64
@@ -47,7 +47,7 @@ class StackHandler(size: Int, private val contextChanged: Runnable = Runnable { 
         this.validator = validator
     }
 
-    fun setOutputSlots(outputs: IntArray) {
+    fun setOutputSlots(vararg outputs: Int) {
         this.outputs = outputs
     }
 
@@ -57,7 +57,7 @@ class StackHandler(size: Int, private val contextChanged: Runnable = Runnable { 
         val copied = StackHandler(this.slots, this.contextChanged)
         copied.setDefaultSlotLimit(this.maxStackSize)
         copied.setValidator(this.validator!!)
-        copied.setOutputSlots(this.outputs!!)
+        copied.setOutputSlots(*this.outputs!!)
 
         this.slotSize.forEach(copied::addSlotLimit)
 

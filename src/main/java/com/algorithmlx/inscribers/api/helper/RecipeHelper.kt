@@ -18,6 +18,8 @@ interface RecipeHelper: IRecipe<IInventory> {
 
     fun result(handler: IItemHandler): ItemStack
 
+    fun result(inv: IInventory): ItemStack = this.result(InvWrapper(inv))
+
     fun matches(handler: IItemHandler): Boolean = this.matches(handler, 0, handler.slots)
 
     fun matches(handler: IItemHandler, startIndex: Int, endIndex: Int): Boolean {

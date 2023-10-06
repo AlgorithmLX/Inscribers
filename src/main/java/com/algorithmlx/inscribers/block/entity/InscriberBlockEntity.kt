@@ -1,105 +1,195 @@
 package com.algorithmlx.inscribers.block.entity
 
-import com.algorithmlx.inscribers.LOGGER
-import com.algorithmlx.inscribers.api.block.*
+import com.algorithmlx.inscribers.api.block.ContainerBlockEntity
+import com.algorithmlx.inscribers.api.block.IInscriber
+import com.algorithmlx.inscribers.api.block.IInscriberBlockEntity
 import com.algorithmlx.inscribers.api.energy.InscribersEnergyStorageAPI
-import com.algorithmlx.inscribers.api.handler.*
+import com.algorithmlx.inscribers.api.handler.StackHandler
+import com.algorithmlx.inscribers.api.helper.StackHelper
 import com.algorithmlx.inscribers.api.intArray
 import com.algorithmlx.inscribers.container.menu.InscriberContainerMenu
-import com.algorithmlx.inscribers.init.registry.*
+import com.algorithmlx.inscribers.init.config.InscribersConfig
+import com.algorithmlx.inscribers.init.registry.InscribersRecipeTypes
+import com.algorithmlx.inscribers.init.registry.Register
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.container.Container
+import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundNBT
 import net.minecraft.util.Direction
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.util.LazyOptional
 import net.minecraftforge.energy.IEnergyStorage
 import net.minecraftforge.items.CapabilityItemHandler
+import net.minecraftforge.items.IItemHandler
 
 class InscriberBlockEntity : ContainerBlockEntity(Register.inscriberBlockEntity.get()), IInscriberBlockEntity {
     private val handler: StackHandler
-    val energy: InscribersEnergyStorageAPI
+    private val craftingHandler: StackHandler
+    private val energy: InscribersEnergyStorageAPI
 
-    var progress: Int = 0
-    private var isWorking: Boolean = false
     private var recipe: InscriberRecipe? = null
-
-    private val energyLazy: LazyOptional<IEnergyStorage> = LazyOptional.of(this::energy)
+    var progress: Int = 0
+    var isWorking: Boolean = false
+    private var oldEnergy: Int = 0
+    private var gridChanged = false
 
     init {
-        handler = StackHandler(this.getInscriber().getSize(), this::change)
-        energy = InscribersEnergyStorageAPI(this.getInscriber().getEnergy())
+        this.handler = StackHandler(36, this::change)
+        this.craftingHandler = StackHandler(35)
+        this.energy = InscribersEnergyStorageAPI(InscribersConfig.inscriberCapacity.get())
+
+        this.handler.setOutputSlots(36)
+        this.handler.setValidator(::canInsertStack)
     }
 
-    override fun getInv(): StackHandler = this.handler
+    override fun save(pCompound: CompoundNBT): CompoundNBT {
+        val tag = super.save(pCompound)
+        tag.putInt("progress", this.progress)
+        tag.putBoolean("working", this.isWorking)
+        tag.putInt("energy", this.energy.energyStored)
 
-    override fun getInscriber(): IInscriber = Register.inscriberBlock.get()
+        return tag
+    }
 
     override fun load(pState: BlockState, pCompound: CompoundNBT) {
         super.load(pState, pCompound)
         this.progress = pCompound.getInt("progress")
         this.energy.setStored(pCompound.getInt("energy"))
         this.isWorking = pCompound.getBoolean("working")
-        LOGGER.debug("Data '{}' loaded", pCompound)
-    }
-
-    override fun save(pCompound: CompoundNBT): CompoundNBT {
-        val tag = super.save(pCompound)
-        tag.putInt("progress", this.progress)
-        tag.putInt("energy", this.energy.energyStored)
-        tag.putBoolean("working", this.isWorking)
-        LOGGER.debug("Data '{}' saved", pCompound)
-        return tag
     }
 
     override fun tick() {
+        var changeBlockEntity = false
         val level = this.getLevel()
-        if (level == null || level.isClientSide) return
+        val energy = this.getEnergyStorage()
 
-        var change = false
+        if (level != null) {
+            if (this.isWorking) {
+                this.updateInventory()
+                val recipeContainer = this.getCraftingInventory().toContainer()
 
-        if (this.recipe == null || !this.recipe!!.matches(handler)) {
-            val locRecipe = level.recipeManager.getRecipeFor(InscribersRecipeTypes.inscriberRecipe, this.handler.toContainer(), level)
-                .orElse(null)
-            this.recipe = if (locRecipe is InscriberRecipe) locRecipe else null
-        }
+                if (this.gridChanged && (this.recipe == null || !this.recipe!!.matches(recipeContainer, level))) {
+                    val recipe = level.recipeManager.getRecipeFor(InscribersRecipeTypes.inscriberRecipe, recipeContainer, level).orElse(null)
 
-        if (this.recipe != null) {
-            val needsEnergy = this.recipe!!.energyPerTick // Needs energy per tick
-            val resultTime = this.recipe!!.time
-            this.isWorking = true
-            if (this.energy.energyStored >= needsEnergy) {
-                this.progress += 1
-                this.energy.extractEnergy(needsEnergy, simulate = false)
+                    this.recipe = recipe
 
-                if (this.progress >= resultTime) {
-                    for (j in 0 until 6)
-                        for (k in 0 until 6) this.handler.extract(k + j * 6, 1, false)
-                    this.handler.setStackInSlot(0, this.recipe!!.result(this.handler))
+                    this.gridChanged = false
+                }
+
+                if (!level.isClientSide) {
+                    if (this.recipe != null) {
+                        val localRecipe = this.recipe!!
+                        val inv = this.getInv()
+                        val result = localRecipe.result(recipeContainer)
+                        val outputSlot = inv.slots - 1
+                        val output = inv.getStackInSlot(outputSlot)
+                        val usingEnergy = localRecipe.energyPerTick
+
+                        if (StackHelper.canCombine(result, output) && energy.energyStored >= usingEnergy) {
+                            this.progress++
+                            energy.extractEnergy(usingEnergy, false)
+                            if (this.progress >= localRecipe.time) {
+                                val remaining = localRecipe.getRemainingItems(recipeContainer)
+                                for (i in 0 until recipeContainer.containerSize) {
+                                    if (!remaining[i].isEmpty) inv.setStackInSlot(i, remaining[i])
+                                    else inv.extract(i, 1, false)
+                                }
+
+                                this.updateResult(result, outputSlot)
+                                this.progress = 0
+                                this.gridChanged = true
+                            }
+
+                            changeBlockEntity = true
+                        }
+                    } else {
+                        if (progress > 0) {
+                            this.progress = 0
+                            changeBlockEntity = true
+                        }
+                    }
+                }
+            } else {
+                if (this.progress > 0) {
                     this.progress = 0
-                    this.isWorking = false
-                    change = true
+                    changeBlockEntity = true
                 }
             }
-        } else {
-            if (this.progress > 0) this.progress = 0
-            change = true
+
+            val insertPowerRate = InscribersConfig.inscriberPowerInsert.get()
+
+            if (!level.isClientSide && this.getEnergyStorage().energyStored >= insertPowerRate) {
+                this.aboveInventory().ifPresent { handler ->
+                    for (i in 0 until handler.slots) {
+                        val stack = handler.getStackInSlot(i)
+                        if (!stack.isEmpty && !handler.extractItem(i, 1, true).isEmpty) {
+                            handler.extractItem(i, 1, false)
+                            break
+                        }
+                    }
+                }
+            }
         }
 
-        if (change) this.change()
+        if (this.oldEnergy != energy.energyStored) {
+            this.oldEnergy = energy.energyStored
+            if (!changeBlockEntity) changeBlockEntity = true
+        }
+
+        if (changeBlockEntity) {
+            this.change()
+        }
     }
 
-    override fun <T> getCapability(cap: Capability<T>, side: Direction?): LazyOptional<T> {
-        if (!this.isRemoved && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, this.capabilityItemLazy)
+    override fun getInv(): StackHandler = this.handler
+    override fun getCraftingInventory(): StackHandler = this.craftingHandler
 
-        return super.getCapability(cap, side)
+    override fun getInscriber(): IInscriber = Register.inscriberBlock.get()
+
+    override fun <T> getCapability(cap: Capability<T>, side: Direction?): LazyOptional<T> =
+        this.getEnergyCapability(this.isRemoved, cap, super.getCapability(cap, side))
+
+    fun getProgress() = this.progress
+
+    fun getTime() = if (this.recipe != null) this.recipe!!.time else 0
+
+    fun isWorks() = this.isWorking
+
+    override fun getEnergyStorage(): IEnergyStorage = this.energy
+
+    private fun updateInventory() {
+        val inventory = this.getInv()
+        this.getCraftingInventory().setSize(inventory.slots - 1)
+        for (i in 0 until inventory.slots - 1) {
+            val stack = inventory.getStackInSlot(i)
+            this.getCraftingInventory().setStackInSlot(i, stack)
+        }
     }
 
-    fun getTime(): Int = if (this.recipe != null) this.recipe!!.time else 0
+    private fun updateResult(stack: ItemStack, slot: Int) {
+        val inv = this.getInv()
+        val result = inv.getStackInSlot(inv.slots - 1)
+        if (result.isEmpty) inv.setStackInSlot(slot, stack)
+        else inv.setStackInSlot(slot, StackHelper.grow(result, stack.count))
+    }
+
+    fun aboveInventory(): LazyOptional<IItemHandler> {
+        val level = this.level
+        val pos = this.blockPos.above()
+
+        if (level != null) {
+            val blockEntity = level.getBlockEntity(pos)
+            if (blockEntity != null)
+                return blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN)
+        }
+
+        return LazyOptional.empty()
+    }
+
+    fun canInsertStack(slot: Int, stack: ItemStack): Boolean = false
 
     override fun createMenu(windowId : Int, inventory : PlayerInventory, player : PlayerEntity): Container =
         InscriberContainerMenu(windowId, inventory, this::usedByPlayer, this.getInv(), intArray(this.getInscriber().getSize()), this.blockPos)

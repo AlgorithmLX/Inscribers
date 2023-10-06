@@ -12,7 +12,7 @@ import net.minecraftforge.items.CapabilityItemHandler
 import net.minecraftforge.items.IItemHandler
 
 abstract class ContainerBlockEntity(blockEntity: TileEntityType<*>): OpenBlockEntity(blockEntity) {
-    protected val capabilityItemLazy: LazyOptional<IItemHandler> = LazyOptional.of(::getInv)
+    private val capabilityItemLazy: LazyOptional<IItemHandler> = LazyOptional.of(::getInv)
 
     abstract fun getInv(): StackHandler
 
