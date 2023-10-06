@@ -38,7 +38,7 @@ fun getPhysicalServer(): Dist = Dist.DEDICATED_SERVER
 
 fun menu(context: String, vararg objects: Any): ITextComponent = translate("menu", context, objects)
 
-fun translate(id: String, context: String, vararg objects: Any): ITextComponent = TranslationTextComponent(basedText(id, context), objects)
+fun translate(id: String, context: String, vararg objects: Any): ITextComponent = TranslationTextComponent(basedText(id, context), *objects)
 
 fun keybind(id: String, context: String): ITextComponent = KeybindTextComponent(basedText(id, context))
 

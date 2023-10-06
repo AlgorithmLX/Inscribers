@@ -31,8 +31,8 @@ class InscriberBlockEntity : ContainerBlockEntity(Register.inscriberBlockEntity.
     private val energy: InscribersEnergyStorageAPI
 
     private var recipe: InscriberRecipe? = null
-    var progress: Int = 0
-    var isWorking: Boolean = false
+    private var progress: Int = 0
+    private var isWorking: Boolean = false
     private var oldEnergy: Int = 0
     private var gridChanged = false
 

@@ -31,7 +31,7 @@ class InscriberMenuScreen(
         this.blockEntity = this.getBlockEntity()
 
         if (this.blockEntity != null) {
-            this.addWidget(EnergyWidget(11, 31, this.blockEntity!!.energy))
+            this.addWidget(EnergyWidget(11, 31, this.blockEntity!!.getEnergyStorage()))
         }
     }
 
@@ -39,7 +39,7 @@ class InscriberMenuScreen(
 //        val title = this.getTitle()
 //        this.font.draw(pPoseStack, title, 7f, 7f, 4210752)
         val container = this.inventory.displayName
-        this.font.draw(pPoseStack, container, 7f, this.imageHeight - 88f, 4210752)
+        this.font.draw(pPoseStack, container, 7f, this.imageHeight - 101f, 4210752)
     }
 
     private fun getBlockEntity(): InscriberBlockEntity? {
@@ -55,7 +55,7 @@ class InscriberMenuScreen(
         return null
     }
 
-    fun getProgress(): Int = if (this.blockEntity != null) this.blockEntity!!.progress else 0
+    fun getProgress(): Int = if (this.blockEntity != null) this.blockEntity!!.getProgress() else 0
 
     fun getOperationTime(): Int = if (this.blockEntity != null) this.blockEntity!!.getTime() else 0
 
