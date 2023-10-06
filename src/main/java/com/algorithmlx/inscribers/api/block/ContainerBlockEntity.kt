@@ -1,6 +1,5 @@
 package com.algorithmlx.inscribers.api.block
 
-import com.algorithmlx.inscribers.LOGGER
 import com.algorithmlx.inscribers.api.handler.StackHandler
 import net.minecraft.block.BlockState
 import net.minecraft.entity.player.PlayerEntity
@@ -13,10 +12,7 @@ import net.minecraftforge.items.CapabilityItemHandler
 import net.minecraftforge.items.IItemHandler
 
 abstract class ContainerBlockEntity(blockEntity: TileEntityType<*>): OpenBlockEntity(blockEntity) {
-    protected val capabilityItemLazy: LazyOptional<IItemHandler> = LazyOptional.of {
-        LOGGER.debug("Capability loaded for ContainerBlockEntity")
-        this.getInv()
-    }
+    protected val capabilityItemLazy: LazyOptional<IItemHandler> = LazyOptional.of(::getInv)
 
     abstract fun getInv(): StackHandler
 
@@ -32,10 +28,8 @@ abstract class ContainerBlockEntity(blockEntity: TileEntityType<*>): OpenBlockEn
     }
 
     override fun <T : Any?> getCapability(cap: Capability<T>, side: Direction?): LazyOptional<T> {
-        if (!this.isRemoved && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-
+        if (!this.isRemoved && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
             return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, this.capabilityItemLazy)
-        }
 
         return super.getCapability(cap, side)
     }

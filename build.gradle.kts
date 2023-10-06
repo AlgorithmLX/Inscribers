@@ -127,8 +127,6 @@ repositories {
 dependencies {
     minecraft("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
-    val registrate_version: String by project
-    val registrate_range: String by project
     val jei_version: String by project
     val craftTweakerVersion: String by project
     val coroutinesVersion: String by project
@@ -150,8 +148,6 @@ dependencies {
 
     compileOnly(fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${craftTweakerVersion}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api"))
-    compileOnly(fg.deobf("software.bernie.geckolib:geckolib-forge-1.16.5:3.0.106"))
-    runtimeOnly(fg.deobf("software.bernie.geckolib:geckolib-forge-1.16.5:3.0.106"))
 
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 }

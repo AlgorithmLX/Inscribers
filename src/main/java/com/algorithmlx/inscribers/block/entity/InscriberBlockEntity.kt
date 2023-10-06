@@ -16,7 +16,6 @@ import net.minecraft.nbt.CompoundNBT
 import net.minecraft.util.Direction
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.util.LazyOptional
-import net.minecraftforge.energy.CapabilityEnergy
 import net.minecraftforge.energy.IEnergyStorage
 import net.minecraftforge.items.CapabilityItemHandler
 
@@ -31,13 +30,8 @@ class InscriberBlockEntity : ContainerBlockEntity(Register.inscriberBlockEntity.
     private val energyLazy: LazyOptional<IEnergyStorage> = LazyOptional.of(this::energy)
 
     init {
-        handler = StackHandler(36) {
-            LOGGER.debug("Inventory for '{}' loaded", this::class.java)
-            this.change()
-        }
-        energy = InscribersEnergyStorageAPI(this.getInscriber().getEnergy()) {
-            LOGGER.debug("Energy storage for '{}' loaded", this::class.java)
-        }
+        handler = StackHandler(this.getInscriber().getSize(), this::change)
+        energy = InscribersEnergyStorageAPI(this.getInscriber().getEnergy())
     }
 
     override fun getInv(): StackHandler = this.handler
@@ -84,7 +78,7 @@ class InscriberBlockEntity : ContainerBlockEntity(Register.inscriberBlockEntity.
                 if (this.progress >= resultTime) {
                     for (j in 0 until 6)
                         for (k in 0 until 6) this.handler.extract(k + j * 6, 1, false)
-                    this.handler.setStackInSlot(36, this.recipe!!.result(this.handler))
+                    this.handler.setStackInSlot(0, this.recipe!!.result(this.handler))
                     this.progress = 0
                     this.isWorking = false
                     change = true
@@ -99,13 +93,8 @@ class InscriberBlockEntity : ContainerBlockEntity(Register.inscriberBlockEntity.
     }
 
     override fun <T> getCapability(cap: Capability<T>, side: Direction?): LazyOptional<T> {
-        if (!this.isRemoved && cap == CapabilityEnergy.ENERGY) {
-            LOGGER.debug("Energy capability for '{}' initialized", this::class.java)
-            return CapabilityEnergy.ENERGY.orEmpty(cap, this.energyLazy)
-        } else if (!this.isRemoved && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            LOGGER.debug("Item capability for '{}' initialized", this::class.java)
+        if (!this.isRemoved && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
             return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, this.capabilityItemLazy)
-        }
 
         return super.getCapability(cap, side)
     }
@@ -113,5 +102,5 @@ class InscriberBlockEntity : ContainerBlockEntity(Register.inscriberBlockEntity.
     fun getTime(): Int = if (this.recipe != null) this.recipe!!.time else 0
 
     override fun createMenu(windowId : Int, inventory : PlayerInventory, player : PlayerEntity): Container =
-        InscriberContainerMenu(windowId, inventory, this::usedByPlayer, intArray(0), this.blockPos)
+        InscriberContainerMenu(windowId, inventory, this::usedByPlayer, this.getInv(), intArray(this.getInscriber().getSize()), this.blockPos)
 }
