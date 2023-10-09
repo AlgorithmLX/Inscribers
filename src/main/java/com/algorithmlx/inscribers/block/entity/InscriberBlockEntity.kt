@@ -189,7 +189,7 @@ class InscriberBlockEntity : ContainerBlockEntity(Register.inscriberBlockEntity.
         return LazyOptional.empty()
     }
 
-    fun canInsertStack(slot: Int, stack: ItemStack): Boolean = false
+    fun canInsertStack(slot: Int, stack: ItemStack): Boolean = true
 
     override fun createMenu(windowId : Int, inventory : PlayerInventory, player : PlayerEntity): Container =
         InscriberContainerMenu(windowId, inventory, this::usedByPlayer, this.getInv(), intArray(this.getInscriber().getSize()), this.blockPos)
