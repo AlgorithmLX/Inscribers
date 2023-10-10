@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.thread.SidedThreadGroups
 import net.minecraftforge.fml.config.ModConfig
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import net.minecraftforge.fml.loading.FMLEnvironment
+import java.util.Objects
 
 val context: ModLoadingContext = ModLoadingContext.get()
 
@@ -36,17 +37,17 @@ fun getPhysicalClient(): Dist = Dist.CLIENT
 
 fun getPhysicalServer(): Dist = Dist.DEDICATED_SERVER
 
-fun menu(context: String, vararg objects: Any): ITextComponent = translate("menu", context, objects)
+fun menu(context: String, vararg objects: Any) = translate("menu", context, objects)
 
-fun translate(id: String, context: String, vararg objects: Any): ITextComponent = TranslationTextComponent(basedText(id, context), *objects)
+fun translate(id: String, context: String, vararg objects: Any) = TranslationTextComponent(basedText(id, context), *objects)
 
-fun keybind(id: String, context: String): ITextComponent = KeybindTextComponent(basedText(id, context))
+fun keybind(id: String, context: String): KeybindTextComponent = KeybindTextComponent(basedText(id, context))
 
-fun scoreText(id: String, context: String, objective: String): ITextComponent = ScoreTextComponent(basedText(id, context), objective)
+fun scoreText(id: String, context: String, objective: String): ScoreTextComponent = ScoreTextComponent(basedText(id, context), objective)
 
-fun selectorText(id: String, context: String): ITextComponent = SelectorTextComponent(basedText(id, context))
+fun selectorText(id: String, context: String): SelectorTextComponent = SelectorTextComponent(basedText(id, context))
 
-fun stringText(id: String, context: String): ITextComponent = StringTextComponent(basedText(id, context))
+fun stringText(context: String): StringTextComponent = StringTextComponent(context)
 
 fun basedText(id: String, context: String): String = "$id.${ModId}.$context"
 

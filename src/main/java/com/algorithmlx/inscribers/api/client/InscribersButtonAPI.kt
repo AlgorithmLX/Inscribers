@@ -1,7 +1,7 @@
 package com.algorithmlx.inscribers.api.client
 
 import com.algorithmlx.inscribers.api.drawString
-import com.algorithmlx.inscribers.api.isCursorAtButton
+import com.algorithmlx.inscribers.api.mouseAtPosition
 import com.algorithmlx.inscribers.api.mc
 import com.algorithmlx.inscribers.api.renderItem
 import com.mojang.blaze3d.matrix.MatrixStack
@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.text.ITextComponent
 import net.minecraft.util.text.StringTextComponent
+import net.minecraft.util.text.TextFormatting
 
 open class InscribersButtonAPI(
     private val buttonX: Int,
@@ -36,11 +37,11 @@ open class InscribersButtonAPI(
             mc.textureManager.bind(this.texture)
             if (this.enableDoubleButton) {
                 if (!getActivated(this.id)) {
-                    if (this.isCursorAtButton(pMouseX, pMouseY))
+                    if (mouseAtPosition(pMouseX, pMouseY, pMouseX, pMouseY, pMouseX, pMouseY))
                         blit(pPoseStack, textureW, textureH, 0, 0, this.buttonWidth, this.buttonHeight)
                     else blit(pPoseStack, textureW, textureH, 0, 8, this.buttonWidth, buttonHeight)
                 } else {
-                    if (!this.isCursorAtButton(pMouseX, pMouseY))
+                    if (!mouseAtPosition(pMouseX, pMouseY, pMouseX, pMouseY, pMouseX, pMouseY))
                         blit(pPoseStack, textureW, textureH, 8, 0, this.buttonWidth, this.buttonHeight)
                     else blit(pPoseStack, textureW, textureH, 8, 8, this.buttonWidth, this.buttonHeight)
                 }

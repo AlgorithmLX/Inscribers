@@ -1,15 +1,13 @@
 package com.algorithmlx.inscribers.init.registry
 
 import com.algorithmlx.inscribers.LOGGER
+import com.algorithmlx.inscribers.api.*
 import com.algorithmlx.inscribers.api.block.IInscriber
-import com.algorithmlx.inscribers.api.forgeBus
-import com.algorithmlx.inscribers.api.isPhysicalClient
-import com.algorithmlx.inscribers.api.modBus
-import com.algorithmlx.inscribers.api.translate
 import com.algorithmlx.inscribers.client.render.InscriberBlockEntityRenderer
 import com.algorithmlx.inscribers.client.screen.InscriberMenuScreen
 import net.minecraft.client.gui.ScreenManager
 import net.minecraft.item.BlockItem
+import net.minecraft.util.text.TranslationTextComponent
 import net.minecraftforge.event.entity.player.ItemTooltipEvent
 import net.minecraftforge.fml.client.registry.ClientRegistry
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
@@ -44,14 +42,14 @@ object InscriberClientSetup {
             val block = item.block
 
             if (block is IInscriber) {
-                val x = block.getXSize()
-                val y = block.getYSize()
+                val x: Int = block.getXSize()
+                val y: Int = block.getYSize()
                 val type = block.getType().getTranslationName()
-                val capacity = block.getEnergy()
+                val capacity: Int = block.getEnergy()
 
-                tooltip.add(translate("api", "container", x, y))
-                tooltip.add(translate("api", "capacity", capacity))
-                tooltip.add(translate("api", "type", type))
+                tooltip.add(TranslationTextComponent(basedText("api", "container"), x, y))
+                tooltip.add(TranslationTextComponent(basedText("api", "capacity"), capacity))
+                tooltip.add(TranslationTextComponent(basedText("api", "type"), type))
             }
         }
     }

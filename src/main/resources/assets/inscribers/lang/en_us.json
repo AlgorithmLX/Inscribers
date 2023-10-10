@@ -1,8 +1,7 @@
 {
-  "api.inscribers.container": "Container size: §6%s§fx§6%s",
-  "api.inscribers.capacity": "Max energy capacity: %s",
-  "api.inscribers.type": "Inscriber type: %s",
-  "api.inscribers.shift": "Hold §7[§6shift§7] for view more info.",
+  "api.inscribers.container": "§7Container size: §g%s§7x§e%s",
+  "api.inscribers.capacity": "§7Max energy capacity: §g%s §7FE",
+  "api.inscribers.type": "§7Inscriber type: §g%s",
 
   "api.type.inscribers.standard_inscriber": "Standard",
 
@@ -11,6 +10,11 @@
   "block.inscribers.inscriber": "Inscriber",
 
   "menu.inscribers.inscriber": "Inscriber",
+
+  "gui.inscribers.energy": "§7Energy stored: §g%s§7/§g%s§7 FE",
+  "gui.inscribers.progress": "§7Crafting progress: §g%s",
+  "gui.inscribers.progress.no": "No active crafting progress",
+  "gui.inscribers.energy.consumingPerTick": "§7Consuming energy per tick for crafting: §e%s",
 
   "jei.inscribers.category.inscriber": "Inscriber"
 }

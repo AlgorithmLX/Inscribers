@@ -31,7 +31,7 @@ class InscriberBlockEntity : ContainerBlockEntity(Register.inscriberBlockEntity.
     private val energy: InscribersEnergyStorageAPI
 
     private var recipe: InscriberRecipe? = null
-    private var progress: Int = 0
+    var progress: Int = 0
     private var isWorking: Boolean = false
     private var oldEnergy: Int = 0
     private var gridChanged = false
@@ -152,11 +152,9 @@ class InscriberBlockEntity : ContainerBlockEntity(Register.inscriberBlockEntity.
     override fun <T> getCapability(cap: Capability<T>, side: Direction?): LazyOptional<T> =
         this.getEnergyCapability(this.isRemoved, cap, super.getCapability(cap, side))
 
-    fun getProgress() = this.progress
-
     fun getTime() = if (this.recipe != null) this.recipe!!.time else 0
 
-    fun isWorks() = this.isWorking
+    fun getOperationEnergy() = if (this.recipe != null) this.recipe!!.energyPerTick else 0
 
     override fun getEnergyStorage(): IEnergyStorage = this.energy
 

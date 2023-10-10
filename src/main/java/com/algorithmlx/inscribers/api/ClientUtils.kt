@@ -9,7 +9,6 @@ import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.Widget
 import net.minecraft.client.renderer.IRenderTypeBuffer
 import net.minecraft.client.renderer.model.ItemCameraTransforms
-import net.minecraft.client.renderer.texture.TextureManager
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
 import net.minecraft.util.ResourceLocation
@@ -51,14 +50,8 @@ fun MatrixStack.drawString(text: ITextComponent, mouseX: Float, mouseY: Float, c
     font.draw(this, text, mouseX, mouseY, color)
 }
 
-fun Screen.isCursorAtButton(x: Int, y: Int, mouseX: Int, mouseY: Int): Boolean =
-    isCursorAtButton(x, y, this.width, this.height, mouseX, mouseY)
-
-fun Widget.isCursorAtButton(mouseX: Int, mouseY: Int): Boolean =
-    isCursorAtButton(this.x, this.y, this.width, this.height, mouseX, mouseY)
-
-fun isCursorAtButton(x: Int, y: Int, width: Int, height: Int, mouseX: Int, mouseY: Int): Boolean =
-    mouseX >= x && mouseY >= y && mouseX <= x + width && mouseY <= y + height
+fun mouseAtPosition(x: Int, y: Int, x1: Int, y1: Int, mouseX: Int, mouseY: Int): Boolean =
+    mouseX >= x && mouseY >= y && mouseX <= x1 && mouseY <= y1
 
 fun MatrixStack.texture(widget: Widget, id: ResourceLocation, x: Int, y: Int, uOffset: Int, vOffset: Int) {
     this.texture(widget, id, x, y, uOffset, vOffset, widget.width, widget.height)

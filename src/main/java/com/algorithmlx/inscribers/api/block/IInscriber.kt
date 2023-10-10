@@ -41,7 +41,7 @@ interface IInscriber {
     enum class InscriberType {
         STANDARD_INSCRIBER;
 
-        fun getTranslationName(): ITextComponent = translate("api.type", this.name.lowercase())
+        fun getTranslationName() = translate("api.type", this.name.lowercase())
     }
 
     object InscriberStates {

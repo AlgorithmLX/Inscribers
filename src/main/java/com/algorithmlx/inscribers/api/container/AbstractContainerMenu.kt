@@ -3,11 +3,12 @@ package com.algorithmlx.inscribers.api.container
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.container.Container
 import net.minecraft.inventory.container.ContainerType
+import net.minecraft.util.math.BlockPos
 import net.minecraftforge.items.IItemHandler
 import net.minecraftforge.items.SlotItemHandler
 import net.minecraftforge.items.wrapper.InvWrapper
 
-abstract class AbstractContainerMenu(pMenuType: ContainerType<*>?, pContainerId: Int) : Container(pMenuType, pContainerId) {
+abstract class AbstractContainerMenu(pMenuType: ContainerType<*>?, pContainerId: Int, val pos: BlockPos) : Container(pMenuType, pContainerId) {
     fun addSlotRange(handler: IItemHandler?, index: Int, x: Int, y: Int, amount: Int, dx: Int): Int {
         var shadowindex = index
         var shadowx = x

@@ -26,8 +26,8 @@ class InscriberContainerMenu(
     private val usedByPlayer: (PlayerEntity) -> Boolean,
     inv: StackHandler,
     data: IIntArray,
-    val pos: BlockPos
-): AbstractContainerMenu(Register.inscriberContainerMenu.get(), windowId) {
+    pos: BlockPos
+): AbstractContainerMenu(Register.inscriberContainerMenu.get(), windowId, pos) {
     private val result: IInventory
     private val level: World
 

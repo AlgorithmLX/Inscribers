@@ -1,16 +1,20 @@
 {
-  "api.inscribers.container": "Размер контейнера: §6%s§fна§6%s",
-  "api.inscribers.capacity": "Максимальное количество энергии: %s",
-  "api.inscribers.type": "Тип высекателя: %s",
-  "api.inscribers.shift": "Зажмите §7[§6shift§7] чтобы увидеть больше информации.",
+  "api.inscribers.container": "§7Размер контейнера: §g%s §7на §e%s",
+  "api.inscribers.capacity": "§7Максимальный размер хранилища энергии: §g%s §7FE",
+  "api.inscribers.type": "§7Тип высекателя: §g%s",
 
-  "api.type.inscribers.standard_inscriber": "Обычный",
+  "api.type.inscribers.standard_inscriber": "Стандартный",
 
-  "itemGroup.inscribers": "Inscribers",
+  "itemGroup.inscribers": "Inscribers Mod",
 
   "block.inscribers.inscriber": "Высекатель",
 
   "menu.inscribers.inscriber": "Высекатель",
+
+  "gui.inscribers.energy": "§7Хранится энергии: §g%s§7/§g%s§7 FE",
+  "gui.inscribers.progress": "§7Прогресс создания: §g%s",
+  "gui.inscribers.progress.no": "Нет активного прогресса создания",
+  "gui.inscribers.energy.consumingPerTick": "§7Использование энергии в тик для создания: §e%s",
 
   "jei.inscribers.category.inscriber": "Высекатель"
 }
