@@ -52,7 +52,6 @@ class InscriberRecipe(
                 pJson,
                 "ingredients"
             ) else JSONUtils.getAsJsonObject(pJson, "ingredients")
-
             if (!pJson.has("result")) throw JsonSyntaxException("$pRecipeId is not valid! Missing argument: \"result\".")
             val itemStack: ItemStack? = if (pJson.get("result").isJsonObject) ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(pJson, "result"))
             else ForgeRegistries.ITEMS.getValue(ResourceLocation(JSONUtils.getAsString(pJson, "result")))

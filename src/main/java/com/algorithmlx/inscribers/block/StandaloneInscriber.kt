@@ -2,14 +2,14 @@ package com.algorithmlx.inscribers.block
 
 import com.algorithmlx.inscribers.api.block.IInscriber
 import com.algorithmlx.inscribers.api.helper.VoxelHelper
-import com.algorithmlx.inscribers.block.entity.InscriberBlockEntity
+import com.algorithmlx.inscribers.block.entity.StandaloneInscriberBlockEntity
+import net.minecraft.block.AbstractBlock
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.material.Material
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.inventory.InventoryHelper
-import net.minecraft.inventory.container.INamedContainerProvider
 import net.minecraft.item.BlockItemUseContext
 import net.minecraft.state.StateContainer
 import net.minecraft.tileentity.TileEntity
@@ -26,12 +26,19 @@ import net.minecraftforge.common.ToolType
 import net.minecraftforge.fml.network.NetworkHooks
 
 @Suppress("override_deprecation")
-class Inscriber: Block(
-    Properties.of(Material.METAL)
-        .harvestLevel(3)
-        .harvestTool(ToolType.PICKAXE)
-        .requiresCorrectToolForDrops()
-), IInscriber {
+abstract class StandaloneInscriber(material: Material, properties: AbstractBlock.Properties.()-> Unit):
+    Block(Properties.of(material).apply(properties)), IInscriber {
+    companion object {
+        @JvmStatic
+        fun defaultProperties(): AbstractBlock.Properties.() -> Unit = {
+            harvestLevel(3)
+            harvestTool(ToolType.PICKAXE)
+            requiresCorrectToolForDrops()
+        }
+    }
+
+    constructor(properties: AbstractBlock.Properties.() -> Unit): this(Material.METAL, properties)
+
     init {
         this.registerDefaultState(this.stateDefinition.any().setValue(IInscriber.InscriberStates.standardVariant, Direction.NORTH))
     }
@@ -151,7 +158,7 @@ class Inscriber: Block(
         if (!pLevel.isClientSide) {
             val blockEntity = pLevel.getBlockEntity(pPos)
 
-            if (blockEntity is InscriberBlockEntity) {
+            if (blockEntity is StandaloneInscriberBlockEntity) {
                 NetworkHooks.openGui(pPlayer as ServerPlayerEntity, blockEntity, pPos)
             }
         }
@@ -162,7 +169,7 @@ class Inscriber: Block(
     override fun hasTileEntity(state: BlockState?): Boolean = true
 
     override fun createTileEntity(state: BlockState?, world: IBlockReader?): TileEntity =
-        InscriberBlockEntity()
+        StandaloneInscriberBlockEntity(this)
 
     override fun createBlockStateDefinition(pBuilder: StateContainer.Builder<Block, BlockState>) {
         pBuilder.add(IInscriber.InscriberStates.standardVariant)
@@ -183,7 +190,7 @@ class Inscriber: Block(
         if (pState.block != pNewState.block) {
             val blockEntity = pLevel.getBlockEntity(pPos)
 
-            if (blockEntity is InscriberBlockEntity)
+            if (blockEntity is StandaloneInscriberBlockEntity)
                 InventoryHelper.dropContents(pLevel, pPos, blockEntity.getInv().getStackList())
         }
 

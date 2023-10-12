@@ -2,16 +2,12 @@ package com.algorithmlx.inscribers.client.screen
 
 import com.algorithmlx.inscribers.api.*
 import com.algorithmlx.inscribers.api.client.ContainerScreenAPI
-import com.algorithmlx.inscribers.block.entity.InscriberBlockEntity
+import com.algorithmlx.inscribers.block.entity.StandaloneInscriberBlockEntity
 import com.algorithmlx.inscribers.container.menu.InscriberContainerMenu
 import com.algorithmlx.inscribers.reloc
 import com.mojang.blaze3d.matrix.MatrixStack
-import net.minecraft.client.gui.AbstractGui
-import net.minecraft.client.gui.FontRenderer
 import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.util.IReorderingProcessor
 import net.minecraft.util.text.ITextComponent
-import net.minecraft.util.text.TranslationTextComponent
 
 class InscriberMenuScreen(
     pMenu: InscriberContainerMenu,
@@ -27,7 +23,7 @@ class InscriberMenuScreen(
     328,
     328
 ) {
-    var blockEntity: InscriberBlockEntity? = null
+    var blockEntity: StandaloneInscriberBlockEntity? = null
 
     override fun init() {
         super.init()
@@ -78,13 +74,13 @@ class InscriberMenuScreen(
         }
     }
 
-    private fun getOrNullBlockEntity(): InscriberBlockEntity? {
+    private fun getOrNullBlockEntity(): StandaloneInscriberBlockEntity? {
         val level = this.getMinecraft().level
 
         if (level != null) {
             val blockEntity = level.getBlockEntity(this.getMenu().pos)
 
-            if (blockEntity is InscriberBlockEntity)
+            if (blockEntity is StandaloneInscriberBlockEntity)
                 return blockEntity
         }
 

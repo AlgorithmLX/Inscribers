@@ -4,7 +4,7 @@ import com.algorithmlx.inscribers.api.container.AbstractContainerMenu
 import com.algorithmlx.inscribers.api.handler.StackHandler
 import com.algorithmlx.inscribers.api.handler.StackHandlerSlot
 import com.algorithmlx.inscribers.api.intArray
-import com.algorithmlx.inscribers.block.entity.InscriberBlockEntity
+import com.algorithmlx.inscribers.block.entity.StandaloneInscriberBlockEntity
 import com.algorithmlx.inscribers.container.InscriberCraftingContainer
 import com.algorithmlx.inscribers.container.slot.InscriberResultSlot
 import com.algorithmlx.inscribers.init.registry.InscribersRecipeTypes
@@ -52,7 +52,7 @@ class InscriberContainerMenu(
     }
 
     constructor(windowId: Int, inventory: PlayerInventory, packetBuffer: PacketBuffer):
-            this(windowId, inventory, { _ -> false }, InscriberBlockEntity().getInv(), intArray(36), packetBuffer.readBlockPos())
+            this(windowId, inventory, { _ -> false }, StandaloneInscriberBlockEntity().getInv(), intArray(36), packetBuffer.readBlockPos())
 
     override fun slotsChanged(pContainer: IInventory) {
         val recipe = this.level.recipeManager

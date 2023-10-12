@@ -1,8 +1,9 @@
 package com.algorithmlx.inscribers.init.registry
 
 import com.algorithmlx.inscribers.ModId
-import com.algorithmlx.inscribers.block.Inscriber
-import com.algorithmlx.inscribers.block.entity.InscriberBlockEntity
+import com.algorithmlx.inscribers.api.block.IInscriber
+import com.algorithmlx.inscribers.block.StandaloneInscriber
+import com.algorithmlx.inscribers.block.entity.StandaloneInscriberBlockEntity
 import com.algorithmlx.inscribers.container.menu.InscriberContainerMenu
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
 import net.minecraft.block.Block
@@ -20,6 +21,25 @@ import net.minecraftforge.registries.IForgeRegistryEntry
 
 @Suppress("MemberVisibilityCanBePrivate", "Nullability_mismatch_based_on_java_annotations")
 object Register {
+    private val basicInscriberExt = object : StandaloneInscriber(defaultProperties()) {
+        override fun getTier(): IInscriber.InscriberTier = IInscriber.InscriberTier.BASIC
+    }
+    private val improvedInscriberExt = object : StandaloneInscriber(defaultProperties()) {
+        override fun getTier(): IInscriber.InscriberTier = IInscriber.InscriberTier.IMPROVED
+    }
+    private val advancedInscriberExt = object : StandaloneInscriber(defaultProperties()) {
+        override fun getTier(): IInscriber.InscriberTier = IInscriber.InscriberTier.ADVANCED
+    }
+    private val eliteInscriberExt = object : StandaloneInscriber(defaultProperties()) {
+        override fun getTier(): IInscriber.InscriberTier = IInscriber.InscriberTier.ELITE
+    }
+    private val perfectInscriberExt = object : StandaloneInscriber(defaultProperties()) {
+        override fun getTier(): IInscriber.InscriberTier = IInscriber.InscriberTier.PERFECT
+    }
+    private val maximizedInscriberExt = object : StandaloneInscriber(defaultProperties()) {
+        override fun getTier(): IInscriber.InscriberTier = IInscriber.InscriberTier.MAXIMIZED
+    }
+
     @JvmField
     val tab = InscriberTab.create(ModId)
     private const val INSCRIBER_ID = "inscriber"
@@ -31,9 +51,9 @@ object Register {
     val menuType = deferred(ForgeRegistries.CONTAINERS)
 
     val inscriberRecipe: RegistryObject<InscriberRecipe.Serializer> = recipes.register(INSCRIBER_ID, InscriberRecipe::Serializer)
-    val inscriberBlock: RegistryObject<Inscriber> = block(INSCRIBER_ID, ::Inscriber) { BlockItem(it, Item.Properties().tab(tab)) }
-    val inscriberBlockEntity: RegistryObject<TileEntityType<InscriberBlockEntity>> = blockEntity.register(INSCRIBER_ID) {
-        TileEntityType.Builder.of(::InscriberBlockEntity, inscriberBlock.get()).build(null)
+    val inscriberBlock: RegistryObject<StandaloneInscriber> = block("basic_".pluz(INSCRIBER_ID), this::basicInscriberExt)
+    val inscriberBlockEntity: RegistryObject<TileEntityType<StandaloneInscriberBlockEntity>> = blockEntity.register(INSCRIBER_ID) {
+        TileEntityType.Builder.of(::StandaloneInscriberBlockEntity, inscriberBlock.get()).build(null)
     }
     val inscriberContainerMenu: RegistryObject<ContainerType<InscriberContainerMenu>> = menuType.register(INSCRIBER_ID) {
         IForgeContainerType.create(::InscriberContainerMenu)
@@ -52,9 +72,13 @@ object Register {
     fun <T : IForgeRegistryEntry<T>> deferred(reg: IForgeRegistry<T>): DeferredRegister<T> =
         DeferredRegister.create(reg, ModId)
 
+    fun <T: Block> block(id: String, block: () -> T): RegistryObject<T> = block(id, block) { BlockItem(it, Item.Properties().tab(tab)) }
+
     fun <T: Block> block(id: String, block: () -> T, item: (T) -> Item): RegistryObject<T> {
         val registeredBlock = this.block.register(id, block)
         this.item.register(id) { item.invoke(registeredBlock.get()) }
         return registeredBlock
     }
+
+    fun String.pluz(id: String): String = "$this$id"
 }

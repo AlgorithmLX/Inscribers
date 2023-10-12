@@ -25,7 +25,7 @@ import net.minecraftforge.energy.IEnergyStorage
 import net.minecraftforge.items.CapabilityItemHandler
 import net.minecraftforge.items.IItemHandler
 
-class InscriberBlockEntity : ContainerBlockEntity(Register.inscriberBlockEntity.get()), IInscriberBlockEntity {
+class StandaloneInscriberBlockEntity(private val inscriber: IInscriber) : ContainerBlockEntity(Register.inscriberBlockEntity.get()), IInscriberBlockEntity {
     private val handler: StackHandler
     private val craftingHandler: StackHandler
     private val energy: InscribersEnergyStorageAPI
@@ -35,10 +35,14 @@ class InscriberBlockEntity : ContainerBlockEntity(Register.inscriberBlockEntity.
     private var isWorking: Boolean = false
     private var oldEnergy: Int = 0
     private var gridChanged = false
+    private var timeOperation: Int = 0
+    private var energyOperation: Int = 0
+
+    constructor(): this(Register.inscriberBlock.get())
 
     init {
-        this.handler = StackHandler(36, this::change)
-        this.craftingHandler = StackHandler(35)
+        this.handler = StackHandler(this.getInscriber().getSize(), this::change)
+        this.craftingHandler = StackHandler(this.getInscriber().getSize() - 1)
         this.energy = InscribersEnergyStorageAPI(InscribersConfig.inscriberCapacity.get())
 
         this.handler.setOutputSlots(36)
@@ -82,16 +86,23 @@ class InscriberBlockEntity : ContainerBlockEntity(Register.inscriberBlockEntity.
                 if (!level.isClientSide) {
                     if (this.recipe != null) {
                         val localRecipe = this.recipe!!
+                        this.timeOperation = if (this.recipe != null) recipe!!.time else 0
+                        this.energyOperation = if (this.recipe != null) recipe!!.energyPerTick else 0
                         val inv = this.getInv()
                         val result = localRecipe.result(recipeContainer)
                         val outputSlot = inv.slots - 1
                         val output = inv.getStackInSlot(outputSlot)
-                        val usingEnergy = localRecipe.energyPerTick
+                        val tier = this.getInscriber().getTier()
 
-                        if (StackHelper.canCombine(result, output) && energy.energyStored >= usingEnergy) {
+                        this.energyOperation = (this.energyOperation * tier.energyCostMultiplier).toInt()
+
+                        this.timeOperation = if (tier.timeBoost < 0) (this.timeOperation * (tier.timeBoost * -1)).toInt()
+                        else (this.timeOperation / tier.timeBoost).toInt()
+
+                        if (StackHelper.canCombine(result, output) && energy.energyStored >= this.energyOperation) {
                             this.progress++
-                            energy.extractEnergy(usingEnergy, false)
-                            if (this.progress >= localRecipe.time) {
+                            energy.extractEnergy(this.energyOperation, false)
+                            if (this.progress >= this.timeOperation) {
                                 val remaining = localRecipe.getRemainingItems(recipeContainer)
                                 for (i in 0 until recipeContainer.containerSize) {
                                     if (!remaining[i].isEmpty) inv.setStackInSlot(i, remaining[i])
@@ -147,14 +158,14 @@ class InscriberBlockEntity : ContainerBlockEntity(Register.inscriberBlockEntity.
     override fun getInv(): StackHandler = this.handler
     override fun getCraftingInventory(): StackHandler = this.craftingHandler
 
-    override fun getInscriber(): IInscriber = Register.inscriberBlock.get()
+    override fun getInscriber(): IInscriber = this.inscriber
 
     override fun <T> getCapability(cap: Capability<T>, side: Direction?): LazyOptional<T> =
         this.getEnergyCapability(this.isRemoved, cap, super.getCapability(cap, side))
 
-    fun getTime() = if (this.recipe != null) this.recipe!!.time else 0
+    fun getTime() = this.timeOperation
 
-    fun getOperationEnergy() = if (this.recipe != null) this.recipe!!.energyPerTick else 0
+    fun getOperationEnergy() = this.energyOperation
 
     override fun getEnergyStorage(): IEnergyStorage = this.energy
 

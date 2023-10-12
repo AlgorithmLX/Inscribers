@@ -2,12 +2,8 @@ package com.algorithmlx.inscribers.api.block
 
 import com.algorithmlx.inscribers.api.translate
 import com.algorithmlx.inscribers.init.config.InscribersConfig
-import com.google.common.collect.Lists
-import net.minecraft.block.HorizontalBlock
 import net.minecraft.state.DirectionProperty
 import net.minecraft.util.Direction
-import net.minecraft.util.text.ITextComponent
-import net.minecraft.util.text.TranslationTextComponent
 import java.util.function.Predicate
 import kotlin.math.sqrt
 
@@ -38,10 +34,24 @@ interface IInscriber {
 
     fun getYSize(): Int = this.sqrtSize
 
+    fun getTier(): InscriberTier
+
     enum class InscriberType {
         STANDARD_INSCRIBER;
 
         fun getTranslationName() = translate("api.type", this.name.lowercase())
+    }
+
+    enum class InscriberTier(
+        @get:JvmName("getEnergyMultiplier") val energyCostMultiplier: Double,
+        val timeBoost: Double
+    ) {
+        BASIC(1.0, -5.0),
+        IMPROVED(3.0, -3.0),
+        ADVANCED(5.0, 1.0),
+        ELITE(10.0, 5.0),
+        PERFECT(16.5, 10.0),
+        MAXIMIZED(53.8, 30.0)
     }
 
     object InscriberStates {
