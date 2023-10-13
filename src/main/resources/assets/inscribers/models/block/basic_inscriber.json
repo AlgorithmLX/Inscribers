@@ -1,0 +1,6 @@
+{
+  "parent": "inscribers:base/inscriber",
+  "textures": {
+    "level_marker": "block/stone"
+  }
+}

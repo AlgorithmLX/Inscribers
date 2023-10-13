@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "inscriber_classic=north": {
+      "model": "inscribers:block/maximized_inscriber",
+      "y": 90
+    },
+    "inscriber_classic=east": {
+      "model": "inscribers:block/maximized_inscriber",
+      "y": 180
+    },
+    "inscriber_classic=south": {
+      "model": "inscribers:block/maximized_inscriber",
+      "y": 270
+    },
+    "inscriber_classic=west": {
+      "model": "inscribers:block/maximized_inscriber"
+    }
+  }
+}

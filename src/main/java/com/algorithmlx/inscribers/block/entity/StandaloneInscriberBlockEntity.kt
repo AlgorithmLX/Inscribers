@@ -38,7 +38,7 @@ class StandaloneInscriberBlockEntity(private val inscriber: IInscriber) : Contai
     private var timeOperation: Int = 0
     private var energyOperation: Int = 0
 
-    constructor(): this(Register.inscriberBlock.get())
+    constructor(): this(Register.basicInscriberBlock.get())
 
     init {
         this.handler = StackHandler(this.getInscriber().getSize(), this::change)

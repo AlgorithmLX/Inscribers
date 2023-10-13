@@ -20,7 +20,7 @@ class InscriberRecipeCategory(guiHelper: IGuiHelper): IRecipeCategory<InscriberR
 
     init {
         this.bg = guiHelper.createDrawable(texture, 0, 0, 130, 168)
-        this.icon = guiHelper.createDrawableIngredient(ItemStack(Register.inscriberBlock.get()))
+        this.icon = guiHelper.createDrawableIngredient(ItemStack(Register.basicInscriberBlock.get()))
     }
 
     override fun getUid(): ResourceLocation = reloc("inscriber")

@@ -1,0 +1,20 @@
+{
+  "api.inscribers.container": "§7Розмір контейнера: §g%s §7на §e%s",
+  "api.inscribers.capacity": "§7Максимальний розмір сховища енергії: §g%s §7FE",
+  "api.inscribers.type": "§7Тип висікача: §g%s",
+
+  "api.type.inscribers.standard_inscriber": "Стандартний",
+
+  "itemGroup.inscribers": "Inscribers Mod",
+
+  "block.inscribers.inscriber": "Висікач",
+
+  "menu.inscribers.inscriber": "Висікач",
+
+  "gui.inscribers.energy": "§7Енергії у сховищі: §g%s§7/§g%s§7 FE",
+  "gui.inscribers.progress": "§7Прогрес створення: §g%s",
+  "gui.inscribers.progress.no": "Немає активного прогресу створення",
+  "gui.inscribers.energy.consumingPerTick": "§7Використання енергії в тік для створення: §e%s",
+
+  "jei.inscribers.category.inscriber": "Висікач"
+}

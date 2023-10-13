@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.ResourceLocation
 
 class InscriberTab private constructor(id: String) : ItemGroup(id) {
-    override fun makeIcon(): ItemStack = ItemStack(Register.inscriberBlock.get())
+    override fun makeIcon(): ItemStack = ItemStack(Register.basicInscriberBlock.get())
 
     override fun getTabsImage(): ResourceLocation = reloc("textures/gui/tab/inscriber_design.png")
 

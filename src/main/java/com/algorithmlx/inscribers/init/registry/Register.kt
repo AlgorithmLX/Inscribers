@@ -1,5 +1,6 @@
 package com.algorithmlx.inscribers.init.registry
 
+import com.algorithmlx.inscribers.LOGGER
 import com.algorithmlx.inscribers.ModId
 import com.algorithmlx.inscribers.api.block.IInscriber
 import com.algorithmlx.inscribers.block.StandaloneInscriber
@@ -51,9 +52,30 @@ object Register {
     val menuType = deferred(ForgeRegistries.CONTAINERS)
 
     val inscriberRecipe: RegistryObject<InscriberRecipe.Serializer> = recipes.register(INSCRIBER_ID, InscriberRecipe::Serializer)
-    val inscriberBlock: RegistryObject<StandaloneInscriber> = block("basic_".pluz(INSCRIBER_ID), this::basicInscriberExt)
-    val inscriberBlockEntity: RegistryObject<TileEntityType<StandaloneInscriberBlockEntity>> = blockEntity.register(INSCRIBER_ID) {
-        TileEntityType.Builder.of(::StandaloneInscriberBlockEntity, inscriberBlock.get()).build(null)
+    val basicInscriberBlock: RegistryObject<StandaloneInscriber> = block("basic".pluz(INSCRIBER_ID), this::basicInscriberExt)
+    val improvedInscriber: RegistryObject<StandaloneInscriber> = block("improved".pluz(INSCRIBER_ID), this::improvedInscriberExt)
+    val advancedInscriber: RegistryObject<StandaloneInscriber> = block("advanced".pluz(INSCRIBER_ID), this::advancedInscriberExt)
+    val eliteInscriber: RegistryObject<StandaloneInscriber> = block("elite".pluz(INSCRIBER_ID), this::eliteInscriberExt)
+    val perfectInscriber: RegistryObject<StandaloneInscriber> = block("perfect".pluz(INSCRIBER_ID), this::perfectInscriberExt)
+    val maximizedInscriber: RegistryObject<StandaloneInscriber> = block("maximized".pluz(INSCRIBER_ID), this::maximizedInscriberExt)
+    val inscriberBlockEntity: RegistryObject<TileEntityType<StandaloneInscriberBlockEntity>>
+    init {
+        val blockArray: MutableList<Block> = mutableListOf()
+
+        ForgeRegistries.BLOCKS.values.stream().map {
+            if (it is IInscriber) {
+                IInscriber.boundedInscribers.add(it)
+                LOGGER.debug("Added {} as supported block entity", it)
+                blockArray.add(it)
+            }
+        }
+
+        inscriberBlockEntity = blockEntity.register(INSCRIBER_ID) {
+            TileEntityType.Builder.of(
+                ::StandaloneInscriberBlockEntity,
+                *blockArray.toTypedArray()
+            ).build(null)
+        }
     }
     val inscriberContainerMenu: RegistryObject<ContainerType<InscriberContainerMenu>> = menuType.register(INSCRIBER_ID) {
         IForgeContainerType.create(::InscriberContainerMenu)
@@ -80,5 +102,5 @@ object Register {
         return registeredBlock
     }
 
-    fun String.pluz(id: String): String = "$this$id"
+    fun String.pluz(id: String): String = "${this}_$id"
 }

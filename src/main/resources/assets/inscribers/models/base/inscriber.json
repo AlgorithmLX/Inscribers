@@ -4,7 +4,7 @@
 	"textures": {
 		"0": "block/beacon",
 		"1": "block/diamond_block",
-		"2": "block/gold_block",
+		"2": "#level_marker",
 		"3": "inscribers:block/inscriber",
 		"4": "block/chiseled_polished_blackstone",
 		"5": "block/black_stained_glass",

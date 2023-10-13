@@ -2,6 +2,8 @@ package com.algorithmlx.inscribers.api.block
 
 import com.algorithmlx.inscribers.api.translate
 import com.algorithmlx.inscribers.init.config.InscribersConfig
+import com.algorithmlx.inscribers.init.registry.Register
+import net.minecraft.block.Block
 import net.minecraft.state.DirectionProperty
 import net.minecraft.util.Direction
 import java.util.function.Predicate
@@ -35,6 +37,11 @@ interface IInscriber {
     fun getYSize(): Int = this.sqrtSize
 
     fun getTier(): InscriberTier
+
+    companion object {
+        @get:JvmStatic
+        val boundedInscribers: MutableList<IInscriber> = mutableListOf()
+    }
 
     enum class InscriberType {
         STANDARD_INSCRIBER;

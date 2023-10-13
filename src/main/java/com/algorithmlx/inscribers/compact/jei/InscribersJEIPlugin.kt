@@ -24,7 +24,7 @@ class InscribersJEIPlugin: IModPlugin {
     }
 
     override fun registerRecipeCatalysts(registration: IRecipeCatalystRegistration) {
-        registration.addRecipeCatalyst(ItemStack(Register.inscriberBlock.get()), reloc("inscriber"))
+        registration.addRecipeCatalyst(ItemStack(Register.basicInscriberBlock.get()), reloc("inscriber"))
     }
 
     override fun registerRecipes(registration: IRecipeRegistration) {
