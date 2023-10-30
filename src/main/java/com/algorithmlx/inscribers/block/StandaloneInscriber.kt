@@ -1,5 +1,6 @@
 package com.algorithmlx.inscribers.block
 
+import com.algorithmlx.inscribers.ModId
 import com.algorithmlx.inscribers.api.block.IInscriber
 import com.algorithmlx.inscribers.api.helper.VoxelHelper
 import com.algorithmlx.inscribers.block.entity.StandaloneInscriberBlockEntity
@@ -215,4 +216,6 @@ abstract class StandaloneInscriber(material: Material, properties: AbstractBlock
     override fun getSize(): Int = 36
 
     override fun getType(): IInscriber.InscriberType = IInscriber.InscriberType.STANDARD_INSCRIBER
+
+    override fun getDescriptionId(): String = "block.$ModId.inscriber"
 }

@@ -2,6 +2,7 @@
   "api.inscribers.container": "§7Container size: §g%s§7x§e%s",
   "api.inscribers.capacity": "§7Max energy capacity: §g%s §7FE",
   "api.inscribers.type": "§7Inscriber type: §g%s",
+  "api.inscribers.level": "§7Inscriber level: %s",
 
   "api.type.inscribers.standard_inscriber": "Standard",
 
@@ -15,6 +16,13 @@
   "gui.inscribers.progress": "§7Crafting progress: §g%s",
   "gui.inscribers.progress.no": "No active crafting progress",
   "gui.inscribers.energy.consumingPerTick": "§7Consuming energy per tick for crafting: §e%s",
+
+  "tier.inscribers.basic": "Basic",
+  "tier.inscribers.improved": "Improved",
+  "tier.inscribers.advanced": "Advanced",
+  "tier.inscribers.elite": "Elite",
+  "tier.inscribers.perfect": "Perfect",
+  "tier.inscribers.maximized": "Maximal",
 
   "jei.inscribers.category.inscriber": "Inscriber"
 }

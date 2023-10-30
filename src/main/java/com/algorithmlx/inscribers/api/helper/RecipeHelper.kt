@@ -25,7 +25,7 @@ interface RecipeHelper: IRecipe<IInventory> {
     fun matches(handler: IItemHandler, startIndex: Int, endIndex: Int): Boolean {
         val inputs = NonNullList.create<ItemStack>()
 
-        for (i in startIndex ..< endIndex) {
+        for (i in startIndex until endIndex) {
             inputs.add(handler.getStackInSlot(i))
         }
 
@@ -35,7 +35,7 @@ interface RecipeHelper: IRecipe<IInventory> {
     fun getRemainingItems(handler: IItemHandler): NonNullList<ItemStack> {
         val items = NonNullList.withSize(handler.slots, ItemStack.EMPTY)
 
-        for (i in 0 ..< items.size) {
+        for (i in 0 until items.size) {
             val stack = handler.getStackInSlot(i)
             if (stack.hasContainerItem()) items[i] = stack.containerItem
         }

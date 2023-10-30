@@ -2,6 +2,7 @@
   "api.inscribers.container": "§7Размер контейнера: §g%s §7на §e%s",
   "api.inscribers.capacity": "§7Максимальный размер хранилища энергии: §g%s §7FE",
   "api.inscribers.type": "§7Тип высекателя: §g%s",
+  "api.inscribers.level": "§7Уровень высекателя: %s",
 
   "api.type.inscribers.standard_inscriber": "Стандартный",
 
@@ -15,6 +16,13 @@
   "gui.inscribers.progress": "§7Прогресс создания: §g%s",
   "gui.inscribers.progress.no": "Нет активного прогресса создания",
   "gui.inscribers.energy.consumingPerTick": "§7Использование энергии в тик для создания: §e%s",
+
+  "tier.inscribers.basic": "Базовый",
+  "tier.inscribers.improved": "Улучшенный",
+  "tier.inscribers.advanced": "Продвинутый",
+  "tier.inscribers.elite": "Элитный",
+  "tier.inscribers.perfect": "Совершенный",
+  "tier.inscribers.maximized": "Максимальный",
 
   "jei.inscribers.category.inscriber": "Высекатель"
 }

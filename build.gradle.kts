@@ -7,7 +7,7 @@ import org.spongepowered.asm.gradle.plugins.MixinExtension
 
 buildscript {
     dependencies {
-        classpath("org.spongepowered:mixingradle:0.7-SNAPSHOT")
+        classpath("org.spongepowered:mixingradle:0.7.38")
     }
 }
 
@@ -30,7 +30,6 @@ val minecraft_version: String by project
 val forge_version: String by project
 
 val shadow: Configuration by configurations.creating
-val main = sourceSets["main"]
 
 jarJar.enable()
 
@@ -110,18 +109,15 @@ configure<UserDevExtension> {
 }
 
 configure<MixinExtension> {
-    add(main, "inscribers.refmap.json")
+    add(sourceSets.main.get(), "inscribers.refmap.json")
     config("inscribers.mixins.json")
 }
 
 repositories {
     mavenCentral()
     maven("https://maven.blamejared.com")
-    maven("https://maven.tterrag.com/")
     maven("https://modmaven.dev")
-    maven("https://maven.shedaniel.me/")
-    maven("https://maven.architectury.dev/")
-    maven("https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/")
+    maven("https://thedarkcolour.github.io/KotlinForForge/")
 }
 
 dependencies {
@@ -131,21 +127,13 @@ dependencies {
     val craftTweakerVersion: String by project
     val coroutinesVersion: String by project
     val serializationVersion: String by project
+    val kffVersion: String by project
 
-    shadow(kotlin("reflect"))
-    shadow(kotlin("stdlib"))
-    shadow(kotlin("stdlib-common"))
-    shadow(kotlinx("coroutines-core", coroutinesVersion))
-    shadow(kotlinx("coroutines-core-jvm", coroutinesVersion))
-    shadow(kotlinx("coroutines-jdk8", coroutinesVersion))
-    shadow(kotlinx("serialization-core", serializationVersion))
-    shadow(kotlinx("serialization-json", serializationVersion))
-//    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
-//    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:${coroutinesVersion}")
-//    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${coroutinesVersion}")
-//    shadow("org.jetbrains.kotlinx:kotlinx-serialization-core:${serializationVersion}")
-//    shadow("org.jetbrains.kotlinx:kotlinx-serialization-json:${serializationVersion}")
+    jarJar(fg.deobf("thedarkcolour:kotlinforforge:${kffVersion}")) {
+        jarJar.ranged(this, "[$kffVersion,)")
+    }
 
+    runtimeOnly(fg.deobf("thedarkcolour:kotlinforforge:${kffVersion}"))
     compileOnly(fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${craftTweakerVersion}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api"))
 
@@ -154,7 +142,7 @@ dependencies {
 
 tasks {
     withType<Jar> {
-        from(main.output)
+        from(sourceSets.main.get().output)
         manifest {
             attributes(
                 mapOf(

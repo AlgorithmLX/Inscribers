@@ -6,6 +6,7 @@ import com.algorithmlx.inscribers.init.registry.Register
 import net.minecraft.block.Block
 import net.minecraft.state.DirectionProperty
 import net.minecraft.util.Direction
+import net.minecraft.util.text.TextFormatting
 import java.util.function.Predicate
 import kotlin.math.sqrt
 
@@ -51,14 +52,17 @@ interface IInscriber {
 
     enum class InscriberTier(
         @get:JvmName("getEnergyMultiplier") val energyCostMultiplier: Double,
-        val timeBoost: Double
+        val timeBoost: Double,
+        val withFormatting: TextFormatting = TextFormatting.WHITE
     ) {
         BASIC(1.0, -5.0),
-        IMPROVED(3.0, -3.0),
-        ADVANCED(5.0, 1.0),
-        ELITE(10.0, 5.0),
-        PERFECT(16.5, 10.0),
-        MAXIMIZED(53.8, 30.0)
+        IMPROVED(3.0, -3.0, TextFormatting.DARK_GRAY),
+        ADVANCED(5.0, 1.0, TextFormatting.GOLD),
+        ELITE(10.0, 5.0, TextFormatting.DARK_AQUA),
+        PERFECT(16.5, 10.0, TextFormatting.GREEN),
+        MAXIMIZED(53.8, 30.0, TextFormatting.LIGHT_PURPLE);
+
+        fun getTranslationName() = translate("tier", this.name.lowercase()).withStyle(this.withFormatting)
     }
 
     object InscriberStates {

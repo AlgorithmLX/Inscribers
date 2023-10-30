@@ -9,10 +9,8 @@ import io.netty.util.internal.UnstableApi
 import net.minecraft.client.gui.widget.Widget
 import net.minecraft.util.text.StringTextComponent
 import net.minecraftforge.energy.IEnergyStorage
-import org.jetbrains.annotations.ApiStatus
 
 @UnstableApi
-@ApiStatus.Experimental
 class EnergyWidget(x: Int, y: Int, private val storage: IEnergyStorage):
     Widget(x, y, 14, 78, StringTextComponent("Energy Bar")) {
     private val widgetTexture = reloc("textures/gui/widget/energy.png")

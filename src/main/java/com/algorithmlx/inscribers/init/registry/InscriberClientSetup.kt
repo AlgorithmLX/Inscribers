@@ -7,6 +7,9 @@ import com.algorithmlx.inscribers.client.render.InscriberBlockEntityRenderer
 import com.algorithmlx.inscribers.client.screen.InscriberMenuScreen
 import net.minecraft.client.gui.ScreenManager
 import net.minecraft.item.BlockItem
+import net.minecraft.util.text.ITextComponent
+import net.minecraft.util.text.StringTextComponent
+import net.minecraft.util.text.TextFormatting
 import net.minecraft.util.text.TranslationTextComponent
 import net.minecraftforge.event.entity.player.ItemTooltipEvent
 import net.minecraftforge.fml.client.registry.ClientRegistry
@@ -42,15 +45,19 @@ object InscriberClientSetup {
             val block = item.block
 
             if (block is IInscriber) {
-                val x: Int = block.getXSize()
-                val y: Int = block.getYSize()
+                val x: ITextComponent = block.getXSize().stylizedInt()
+                val y: ITextComponent = block.getYSize().stylizedInt()
                 val type = block.getType().getTranslationName()
                 val capacity: Int = block.getEnergy()
+                val level = block.getTier().getTranslationName()
 
-                tooltip.add(TranslationTextComponent(basedText("api", "container"), x, y))
-                tooltip.add(TranslationTextComponent(basedText("api", "capacity"), capacity))
-                tooltip.add(TranslationTextComponent(basedText("api", "type"), type))
+                tooltip.add(translate("api", "container", x, y))
+                tooltip.add(translate("api", "capacity", capacity))
+                tooltip.add(translate("api", "type", type))
+                tooltip.add(translate("api", "level", level))
             }
         }
     }
+
+    private fun Int.stylizedInt(): ITextComponent = StringTextComponent("$this").withStyle(TextFormatting.GOLD)
 }

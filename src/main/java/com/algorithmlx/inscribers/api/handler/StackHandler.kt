@@ -61,7 +61,7 @@ class StackHandler(size: Int, private val contextChanged: Runnable? = null): Ite
 
         this.slotSize.forEach(copied::addSlotLimit)
 
-        for (i in 0 ..< this.slots) {
+        for (i in 0 until this.slots) {
             val stack = this.getStackInSlot(i)
             copied.setStackInSlot(i, stack.copy())
         }
