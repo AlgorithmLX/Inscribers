@@ -7,6 +7,7 @@ import com.algorithmlx.inscribers.block.StandaloneInscriber
 import com.algorithmlx.inscribers.block.entity.StandaloneInscriberBlockEntity
 import com.algorithmlx.inscribers.container.menu.InscriberContainerMenu
 import com.algorithmlx.inscribers.recipe.InscriberRecipe
+import com.algorithmlx.inscribers.recipe.MatrixInscriberRecipe
 import net.minecraft.block.Block
 import net.minecraft.inventory.container.ContainerType
 import net.minecraft.item.BlockItem
@@ -52,6 +53,7 @@ object Register {
     val menuType = deferred(ForgeRegistries.CONTAINERS)
 
     val inscriberRecipe: RegistryObject<InscriberRecipe.Serializer> = recipes.register(INSCRIBER_ID, InscriberRecipe::Serializer)
+    val inscriberMatrixRecipe: RegistryObject<MatrixInscriberRecipe.Serializer> = recipes.register("matrix", MatrixInscriberRecipe::Serializer)
     val basicInscriberBlock: RegistryObject<StandaloneInscriber> = block("basic".pluz(INSCRIBER_ID), this::basicInscriberExt)
     val improvedInscriber: RegistryObject<StandaloneInscriber> = block("improved".pluz(INSCRIBER_ID), this::improvedInscriberExt)
     val advancedInscriber: RegistryObject<StandaloneInscriber> = block("advanced".pluz(INSCRIBER_ID), this::advancedInscriberExt)
