@@ -25,13 +25,18 @@ class InscribersJEIPlugin: IModPlugin {
 
     override fun registerRecipeCatalysts(registration: IRecipeCatalystRegistration) {
         registration.addRecipeCatalyst(ItemStack(Register.basicInscriberBlock.get()), reloc("inscriber"))
+        registration.addRecipeCatalyst(ItemStack(Register.advancedInscriber.get()), reloc("inscriber"))
+        registration.addRecipeCatalyst(ItemStack(Register.improvedInscriber.get()), reloc("inscriber"))
+        registration.addRecipeCatalyst(ItemStack(Register.eliteInscriber.get()), reloc("inscriber"))
+        registration.addRecipeCatalyst(ItemStack(Register.perfectInscriber.get()), reloc("inscriber"))
+        registration.addRecipeCatalyst(ItemStack(Register.maximizedInscriber.get()), reloc("inscriber"))
     }
 
     override fun registerRecipes(registration: IRecipeRegistration) {
         if (isLogicalClient()) {
             val level = mc.level ?: return
             val recipeManager = level.recipeManager
-            val recipe = recipeManager.byType(InscribersRecipeTypes.inscriberRecipe)
+            val recipe = recipeManager.byType(InscribersRecipeTypes.matrixInscriberRecipe)
 
             registration.addRecipes(recipe.values, reloc("inscriber"))
         }

@@ -41,13 +41,22 @@ class InscriberRecipeCategory(guiHelper: IGuiHelper): IRecipeCategory<InscriberR
         group.init(0, false, 46, 146)
         group.set(0, outputs)
 
-        for (i in 1 until 36) {
-            for (j in 0 until  6) {
-                for (k in 0 until 6) {
-                    group.init(i, true, j * 18, k * 18)
-                }
+        for (j in 0 until  6) {
+            for (k in 0 until 6) {
+                val i = 1 + k + (j * 6)
+                group.init(i, true, j * 18, k * 18)
             }
-            group.set(i, inputs[i])
+        }
+
+        val heightOffset = Math.floorDiv(6 - recipe.height, 2)
+        val widthOffset = Math.floorDiv(6 - recipe.width, 2)
+        var stackIndex = 0
+        for (i in heightOffset until recipe.height + heightOffset) {
+            for (j in widthOffset until recipe.width + widthOffset) {
+                val index = 1 + (i * 6) + j
+                group.set(index, inputs[stackIndex])
+                stackIndex++
+            }
         }
     }
 

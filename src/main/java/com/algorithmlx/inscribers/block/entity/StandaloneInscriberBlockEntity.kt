@@ -76,7 +76,7 @@ class StandaloneInscriberBlockEntity(private val inscriber: IInscriber) : Contai
                 val recipeContainer = this.getCraftingInventory().toContainer()
 
                 if (this.gridChanged && (this.recipe == null || !this.recipe!!.matches(recipeContainer, level))) {
-                    val recipe = level.recipeManager.getRecipeFor(InscribersRecipeTypes.inscriberRecipe, recipeContainer, level).orElse(null)
+                    val recipe = level.recipeManager.getRecipeFor(InscribersRecipeTypes.matrixInscriberRecipe, recipeContainer, level).orElse(null)
 
                     this.recipe = recipe
 

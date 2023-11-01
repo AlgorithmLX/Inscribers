@@ -1,9 +1,9 @@
 package com.algorithmlx.inscribers.recipe
 
 import com.algorithmlx.inscribers.api.helper.RecipeHelper
-import com.algorithmlx.inscribers.api.helper.IngredientHelper
 import com.algorithmlx.inscribers.init.registry.InscribersRecipeTypes
 import com.algorithmlx.inscribers.init.registry.Register
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import net.minecraft.item.ItemStack
@@ -13,73 +13,130 @@ import net.minecraft.item.crafting.Ingredient
 import net.minecraft.item.crafting.ShapedRecipe
 import net.minecraft.network.PacketBuffer
 import net.minecraft.util.JSONUtils
+import net.minecraft.util.NonNullList
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.items.IItemHandler
-import net.minecraftforge.registries.ForgeRegistries
 import net.minecraftforge.registries.ForgeRegistryEntry
+import kotlin.math.sqrt
 
 class InscriberRecipe(
-    @get:JvmName("recipeType")
-    val recipeType: IRecipeType<InscriberRecipe>,
     @get:JvmName("id")
     val id: ResourceLocation,
-    @get:JvmName("ingredient")
-    val ingredient: Ingredient,
-    @get:JvmName("result")
+    val ingredient: NonNullList<Ingredient>,
     val result: ItemStack,
-    @get:JvmName("time")
-    val time: Int,
-    @get:JvmName("getEnergyCount")
-    val energyPerTick: Int
+    val width: Int,
+    val height: Int,
+    val time: Int = 400,
+    val energyPerTick: Int = 1000
 ): RecipeHelper {
-    constructor(id: ResourceLocation, ingredient: Ingredient, result: ItemStack, time: Int, energyPerTick: Int): this(InscribersRecipeTypes.inscriberRecipe, id, ingredient, result, time, energyPerTick)
+    override fun result(handler: IItemHandler): ItemStack = this.result.copy()
 
-    override fun canCraftInDimensions(pWidth: Int, pHeight: Int): Boolean = true
+    override fun canCraftInDimensions(pWidth: Int, pHeight: Int): Boolean =
+            pWidth >= this.width && pHeight >= this.height
 
-    override fun getResultItem(): ItemStack = this.result.copy()
+    override fun matches(handler: IItemHandler): Boolean {
+        val size = sqrt(handler.slots.toDouble()).toInt()
+        for (i in 0 .. size - this.width) {
+            for (j in 0 .. size - this.height) {
+                if (this.matching(handler, i, j,true)) return true
+                if (this.matching(handler, i, j, false)) return true
+            }
+        }
+
+        return false
+    }
+
+    override fun getIngredients(): NonNullList<Ingredient> = this.ingredient
+
+    override fun getResultItem(): ItemStack = this.result
 
     override fun getId(): ResourceLocation = this.id
 
-    override fun getSerializer(): IRecipeSerializer<*> = Register.inscriberRecipe.get()
+    override fun getSerializer(): IRecipeSerializer<*> = Register.inscriberMatrixRecipe.get()
 
-    override fun getType(): IRecipeType<*> = this.recipeType
+    override fun getType(): IRecipeType<*> = InscribersRecipeTypes.matrixInscriberRecipe
 
-    override fun result(handler: IItemHandler): ItemStack = this.resultItem
+    private fun matching(handler: IItemHandler, x: Int, y: Int, mirror: Boolean): Boolean {
+        val size = sqrt(handler.slots.toDouble()).toInt()
+        for (i in 0 until size) {
+            for (j in 0 until size) {
+                val k = i - x
+                val l = j - y
+                var ingredient: Ingredient = Ingredient.EMPTY
+                if (k >= 0 && l >= 0 && k < this.width && l < this.height) {
+                    ingredient = if (mirror) this.ingredient[this.width - k - 1 + l * this.width]
+                    else this.ingredient[k + l * this.width]
+                    if (!ingredient.test(handler.getStackInSlot(i + j * this.width)))
+                        return false
+                }
+            }
+        }
+
+        return true
+    }
+
+    companion object {
+        @JvmStatic
+        fun patternFromJson(jsonArray: JsonArray): Array<String?> {
+            val asString = arrayOfNulls<String>(jsonArray.size())
+            for (i in asString.indices) {
+                val string = JSONUtils.convertToString(jsonArray.get(i), "pattern[$i]")
+                if (i > 0 && asString[0]?.length != string.length) {
+                    throw JsonSyntaxException("Invalid pattern: each row must be the same width")
+                }
+
+                asString[i] = string
+            }
+
+            return asString
+        }
+    }
 
     class Serializer: IRecipeSerializer<InscriberRecipe>, ForgeRegistryEntry<IRecipeSerializer<*>>() {
         override fun fromJson(pRecipeId: ResourceLocation, pJson: JsonObject): InscriberRecipe {
-            val jsonIngredient = if (JSONUtils.isArrayNode(pJson, "ingredients")) JSONUtils.getAsJsonArray(
-                pJson,
-                "ingredients"
-            ) else JSONUtils.getAsJsonObject(pJson, "ingredients")
-            if (!pJson.has("result")) throw JsonSyntaxException("$pRecipeId is not valid! Missing argument: \"result\".")
-            val itemStack: ItemStack? = if (pJson.get("result").isJsonObject) ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(pJson, "result"))
-            else ForgeRegistries.ITEMS.getValue(ResourceLocation(JSONUtils.getAsString(pJson, "result")))
-                ?.let { ItemStack(it) }
+            val map = ShapedRecipe.keyFromJson(JSONUtils.getAsJsonObject(pJson, "where"))
+            val pattern = ShapedRecipe.shrink(*patternFromJson(JSONUtils.getAsJsonArray(pJson, "pattern")))
+            val width = pattern[0].length
+            val height = pattern.size
 
-            val ingredient = IngredientHelper.fromJson(jsonIngredient)
+            if (width > 6 || height > 6)
+                throw JsonSyntaxException("Pattern size is large then 36 slots...")
+
+            val ingredient = ShapedRecipe.dissolvePattern(pattern, map, width, height)
+            val output = ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(pJson, "result"))
 
             val time: Int = JSONUtils.getAsInt(pJson, "time", 400)
             val energy: Int = JSONUtils.getAsInt(pJson, "energy", 1000)
 
-            return this.getSerial().invoke(pRecipeId, ingredient!!, itemStack!!, time, energy)!!
+            return InscriberRecipe(pRecipeId, ingredient, output, width, height, time, energy)
         }
 
         override fun fromNetwork(pRecipeId: ResourceLocation, pBuffer: PacketBuffer): InscriberRecipe? {
-            val ingredient = Ingredient.fromNetwork(pBuffer)
-            val itemStack = pBuffer.readItem()
-            val time = pBuffer.readInt()
-            val energy = pBuffer.readInt()
-            return this.getSerial().invoke(pRecipeId, ingredient, itemStack, time, energy)
+            val width = pBuffer.readVarInt()
+            val height = pBuffer.readVarInt()
+            val ingredients = NonNullList.withSize(width * height, Ingredient.EMPTY)
+
+            for (i in 0 until ingredients.size)
+                ingredients[i] = Ingredient.fromNetwork(pBuffer)
+
+            val output = pBuffer.readItem()
+
+            val time = pBuffer.readVarInt()
+            val energy = pBuffer.readVarInt()
+
+            return InscriberRecipe(pRecipeId, ingredients, output, width, height, time, energy)
         }
 
         override fun toNetwork(pBuffer: PacketBuffer, pRecipe: InscriberRecipe) {
-            pRecipe.ingredient.toNetwork(pBuffer)
-            pBuffer.writeItem(pRecipe.resultItem)
-            pBuffer.writeInt(pRecipe.time)
-            pBuffer.writeInt(pRecipe.energyPerTick)
-        }
+            pBuffer.writeVarInt(pRecipe.width)
+            pBuffer.writeVarInt(pRecipe.height)
 
-        private fun getSerial(): (ResourceLocation, Ingredient, ItemStack, Int, Int) -> InscriberRecipe? = ::InscriberRecipe
+            for (ingredient in pRecipe.ingredient)
+                ingredient.toNetwork(pBuffer)
+
+            pBuffer.writeItem(pRecipe.result)
+            pBuffer.writeVarInt(pRecipe.time)
+            pBuffer.writeVarInt(pRecipe.energyPerTick)
+        }
     }
 }

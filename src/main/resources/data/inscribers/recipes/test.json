@@ -1,27 +1,22 @@
 {
   "type": "inscribers:inscriber",
-  "ingredients": [
-    {
-      "item": "minecraft:acacia_planks"
-    },
-    {
-      "item": "minecraft:acacia_planks"
-    },
-    {
-      "item": "minecraft:acacia_planks"
-    },
-    {
-      "item": "minecraft:acacia_planks"
-    },
-    {
-      "item": "minecraft:acacia_planks"
-    },
-    {
-      "item": "minecraft:acacia_planks"
-    }
+  "pattern": [
+    "AAAAAA",
+    "AAAAAA",
+    "AAAAAA",
+    "AAAAAA",
+    "AAAAAA",
+    "AAAAAA"
   ],
+  "where": {
+    "A": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "time": 1000,
+  "energy": 0,
   "result": {
-    "item": "minecraft:acacia_planks",
-    "count": 8
+    "item": "minecraft:diamond",
+    "count": 36
   }
 }

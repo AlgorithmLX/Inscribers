@@ -55,13 +55,6 @@ class InscriberContainerMenu(
             this(windowId, inventory, { _ -> false }, StandaloneInscriberBlockEntity().getInv(), intArray(36), packetBuffer.readBlockPos())
 
     override fun slotsChanged(pContainer: IInventory) {
-        val recipe = this.level.recipeManager
-            .getRecipeFor(InscribersRecipeTypes.inscriberRecipe, pContainer, this.level)
-        if (recipe.isPresent) {
-            val result = recipe.get().assemble(pContainer)
-            this.result.setItem(0, result)
-        } else this.result.setItem(0, ItemStack.EMPTY)
-
         super.slotsChanged(pContainer)
     }
 

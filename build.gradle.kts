@@ -136,6 +136,7 @@ dependencies {
     runtimeOnly(fg.deobf("thedarkcolour:kotlinforforge:${kffVersion}"))
     compileOnly(fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${craftTweakerVersion}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api"))
+    runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}"))
 
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 }
