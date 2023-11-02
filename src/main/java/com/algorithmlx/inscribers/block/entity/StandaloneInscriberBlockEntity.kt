@@ -46,7 +46,6 @@ class StandaloneInscriberBlockEntity(private val inscriber: IInscriber) : Contai
         this.energy = InscribersEnergyStorageAPI(InscribersConfig.inscriberCapacity.get())
 
         this.handler.setOutputSlots(36)
-        this.handler.setValidator(::canInsertStack)
     }
 
     override fun save(pCompound: CompoundNBT): CompoundNBT {
@@ -71,75 +70,74 @@ class StandaloneInscriberBlockEntity(private val inscriber: IInscriber) : Contai
         val energy = this.getEnergyStorage()
 
         if (level != null) {
-            if (this.isWorking) {
-                this.updateInventory()
-                val recipeContainer = this.getCraftingInventory().toContainer()
+            val recipeContainer = this.getCraftingInventory().toContainer()
 
-                if (this.gridChanged && (this.recipe == null || !this.recipe!!.matches(recipeContainer, level))) {
-                    val recipe = level.recipeManager.getRecipeFor(InscribersRecipeTypes.matrixInscriberRecipe, recipeContainer, level).orElse(null)
+            if (this.gridChanged && (this.recipe == null || !this.recipe!!.matches(recipeContainer, level))) {
+                val recipe = level.recipeManager.getRecipeFor(InscribersRecipeTypes.matrixInscriberRecipe, recipeContainer, level).orElse(null)
 
-                    this.recipe = recipe
+                this.recipe = recipe
 
-                    this.gridChanged = false
-                }
-
-                if (!level.isClientSide) {
-                    if (this.recipe != null) {
-                        val localRecipe = this.recipe!!
-                        this.timeOperation = if (this.recipe != null) recipe!!.time else 0
-                        this.energyOperation = if (this.recipe != null) recipe!!.energyPerTick else 0
-                        val inv = this.getInv()
-                        val result = localRecipe.result(recipeContainer)
-                        val outputSlot = inv.slots - 1
-                        val output = inv.getStackInSlot(outputSlot)
-                        val tier = this.getInscriber().getTier()
-
-                        this.energyOperation = (this.energyOperation * tier.energyCostMultiplier).toInt()
-
-                        this.timeOperation = if (tier.timeBoost < 0) (this.timeOperation * (tier.timeBoost * -1)).toInt()
-                        else (this.timeOperation / tier.timeBoost).toInt()
-
-                        if (StackHelper.canCombine(result, output) && energy.energyStored >= this.energyOperation) {
-                            this.progress++
-                            energy.extractEnergy(this.energyOperation, false)
-                            if (this.progress >= this.timeOperation) {
-                                val remaining = localRecipe.getRemainingItems(recipeContainer)
-                                for (i in 0 until recipeContainer.containerSize) {
-                                    if (!remaining[i].isEmpty) inv.setStackInSlot(i, remaining[i])
-                                    else inv.extract(i, 1, false)
-                                }
-
-                                this.updateResult(result, outputSlot)
-                                this.progress = 0
-                                this.gridChanged = true
-                            }
-
-                            changeBlockEntity = true
-                        }
-                    } else {
-                        if (progress > 0) {
-                            this.progress = 0
-                            changeBlockEntity = true
-                        }
-                    }
-                }
-            } else {
-                if (this.progress > 0) {
-                    this.progress = 0
-                    changeBlockEntity = true
-                }
+                this.gridChanged = false
             }
 
-            val insertPowerRate = InscribersConfig.inscriberPowerInsert.get()
+            if (!level.isClientSide) {
+                if (this.recipe != null) {
+                    val localRecipe = this.recipe!!
+                    this.timeOperation = recipe!!.time
+                    this.energyOperation = recipe!!.energyPerTick
+                    val inv = this.getInv()
+                    val result = localRecipe.result(recipeContainer)
+                    val outputSlot = inv.slots - 1
+                    val output = inv.getStackInSlot(outputSlot)
+                    val tier = this.getInscriber().getTier()
 
-            if (!level.isClientSide && this.getEnergyStorage().energyStored >= insertPowerRate) {
-                this.aboveInventory().ifPresent { handler ->
-                    for (i in 0 until handler.slots) {
-                        val stack = handler.getStackInSlot(i)
-                        if (!stack.isEmpty && !handler.extractItem(i, 1, true).isEmpty) {
-                            handler.extractItem(i, 1, false)
-                            break
+                    this.energyOperation = (this.energyOperation * tier.energyCostMultiplier).toInt()
+
+                    this.timeOperation = if (tier.timeBoost < 0) (this.timeOperation * (tier.timeBoost * -1)).toInt()
+                    else (this.timeOperation / tier.timeBoost).toInt()
+
+                    if (StackHelper.canCombine(result, output) && energy.energyStored >= this.energyOperation) {
+                        this.isWorking = true
+                        this.progress++
+                        energy.extractEnergy(this.energyOperation, false)
+                        if (this.progress >= this.timeOperation) {
+                            val remaining = localRecipe.getRemainingItems(recipeContainer)
+                            for (i in 0 until recipeContainer.containerSize) {
+                                if (!remaining[i].isEmpty) inv.setStackInSlot(i, remaining[i])
+                                else inv.extract(i, 1, false)
+                            }
+
+                            this.updateResult(result, outputSlot)
+                            this.progress = 0
+                            this.gridChanged = true
+                            this.isWorking = false
                         }
+
+                        changeBlockEntity = true
+                    }
+                } else {
+                    if (progress > 0) {
+                        this.progress = 0
+                        changeBlockEntity = true
+                    }
+                }
+            }
+        } else {
+            if (this.progress > 0) {
+                this.progress = 0
+                changeBlockEntity = true
+            }
+        }
+
+        val insertPowerRate = InscribersConfig.inscriberPowerInsert.get()
+
+        if (level != null && !level.isClientSide && this.getEnergyStorage().energyStored >= insertPowerRate) {
+            this.aboveInventory().ifPresent { handler ->
+                for (i in 0 until handler.slots) {
+                    val stack = handler.getStackInSlot(i)
+                    if (!stack.isEmpty && !handler.extractItem(i, 1, true).isEmpty) {
+                        handler.extractItem(i, 1, false)
+                        break
                     }
                 }
             }
@@ -169,15 +167,6 @@ class StandaloneInscriberBlockEntity(private val inscriber: IInscriber) : Contai
 
     override fun getEnergyStorage(): IEnergyStorage = this.energy
 
-    private fun updateInventory() {
-        val inventory = this.getInv()
-        this.getCraftingInventory().setSize(inventory.slots - 1)
-        for (i in 0 until inventory.slots - 1) {
-            val stack = inventory.getStackInSlot(i)
-            this.getCraftingInventory().setStackInSlot(i, stack)
-        }
-    }
-
     private fun updateResult(stack: ItemStack, slot: Int) {
         val inv = this.getInv()
         val result = inv.getStackInSlot(inv.slots - 1)
@@ -197,8 +186,6 @@ class StandaloneInscriberBlockEntity(private val inscriber: IInscriber) : Contai
 
         return LazyOptional.empty()
     }
-
-    fun canInsertStack(slot: Int, stack: ItemStack): Boolean = true
 
     override fun createMenu(windowId : Int, inventory : PlayerInventory, player : PlayerEntity): Container =
         InscriberContainerMenu(windowId, inventory, this::usedByPlayer, this.getInv(), intArray(this.getInscriber().getSize()), this.blockPos)

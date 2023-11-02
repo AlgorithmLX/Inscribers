@@ -139,6 +139,7 @@ dependencies {
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}"))
 
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks {
