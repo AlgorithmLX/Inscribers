@@ -5,5 +5,5 @@ import com.algorithmlx.inscribers.recipe.InscriberRecipe
 import net.minecraft.item.crafting.IRecipeType
 
 object InscribersRecipeTypes {
-    val matrixInscriberRecipe: IRecipeType<InscriberRecipe> = CastRecipeType.invoke<InscriberRecipe>("inscriber").get()
+    val inscriberRecipe: IRecipeType<InscriberRecipe> = CastRecipeType.invoke("inscriber").get()
 }

@@ -51,7 +51,7 @@ object Register {
     val blockEntity = deferred(ForgeRegistries.TILE_ENTITIES)
     val menuType = deferred(ForgeRegistries.CONTAINERS)
 
-    val inscriberMatrixRecipe: RegistryObject<InscriberRecipe.Serializer> = recipes.register("inscriber", InscriberRecipe::Serializer)
+    val inscriberRecipe: RegistryObject<InscriberRecipe.Serializer> = recipes.register("inscriber", InscriberRecipe::Serializer)
     val basicInscriberBlock: RegistryObject<StandaloneInscriber> = block("basic".pluz(INSCRIBER_ID), this::basicInscriberExt)
     val improvedInscriber: RegistryObject<StandaloneInscriber> = block("improved".pluz(INSCRIBER_ID), this::improvedInscriberExt)
     val advancedInscriber: RegistryObject<StandaloneInscriber> = block("advanced".pluz(INSCRIBER_ID), this::advancedInscriberExt)

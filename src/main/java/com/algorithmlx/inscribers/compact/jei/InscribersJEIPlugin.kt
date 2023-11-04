@@ -36,7 +36,7 @@ class InscribersJEIPlugin: IModPlugin {
         if (isLogicalClient()) {
             val level = mc.level ?: return
             val recipeManager = level.recipeManager
-            val recipe = recipeManager.byType(InscribersRecipeTypes.matrixInscriberRecipe)
+            val recipe = recipeManager.byType(InscribersRecipeTypes.inscriberRecipe)
 
             registration.addRecipes(recipe.values, reloc("inscriber"))
         }

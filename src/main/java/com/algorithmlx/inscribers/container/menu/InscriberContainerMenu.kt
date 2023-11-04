@@ -1,5 +1,6 @@
 package com.algorithmlx.inscribers.container.menu
 
+import com.algorithmlx.inscribers.LOGGER
 import com.algorithmlx.inscribers.api.container.AbstractContainerMenu
 import com.algorithmlx.inscribers.api.handler.StackHandler
 import com.algorithmlx.inscribers.api.handler.StackHandlerSlot
@@ -36,12 +37,15 @@ class InscriberContainerMenu(
         this.level = inventory.player.level
 
         val craftInv = InscriberCraftingContainer(this, inv, 36)
-
-        this.addSlot(InscriberResultSlot(this, craftInv, this.result, 36, 79, 162))
+        val resultSlot = InscriberResultSlot(this, craftInv, this.result, 36, 79, 162)
+        this.addSlot(resultSlot)
+        LOGGER.debug("Added/Loaded RESULT slot with i: ${resultSlot.index} at pos: [${resultSlot.x}:${resultSlot.y}]")
 
         for (j in 0 until 6) {
             for (k in 0 until 6) {
-                this.addSlot(StackHandlerSlot(inv, k + j * 6, 34 + j * 18, 17 + k * 18))
+                val slot = StackHandlerSlot(inv, k + j * 6, 34 + j * 18, 17 + k * 18)
+                this.addSlot(slot)
+                LOGGER.debug("Added/Loaded CLASSIC slot with i: ${slot.slotIndex} at pos: [${slot.x}:${slot.y}]")
             }
         }
 

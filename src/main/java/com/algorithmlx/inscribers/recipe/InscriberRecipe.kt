@@ -52,9 +52,9 @@ class InscriberRecipe(
 
     override fun getId(): ResourceLocation = this.id
 
-    override fun getSerializer(): IRecipeSerializer<*> = Register.inscriberMatrixRecipe.get()
+    override fun getSerializer(): IRecipeSerializer<*> = Register.inscriberRecipe.get()
 
-    override fun getType(): IRecipeType<*> = InscribersRecipeTypes.matrixInscriberRecipe
+    override fun getType(): IRecipeType<*> = InscribersRecipeTypes.inscriberRecipe
 
     private fun matching(handler: IItemHandler, x: Int, y: Int, mirror: Boolean): Boolean {
         val size = sqrt(handler.slots.toDouble()).toInt()
@@ -96,11 +96,8 @@ class InscriberRecipe(
         override fun fromJson(pRecipeId: ResourceLocation, pJson: JsonObject): InscriberRecipe {
             val map = ShapedRecipe.keyFromJson(JSONUtils.getAsJsonObject(pJson, "where"))
             val pattern = ShapedRecipe.shrink(*patternFromJson(JSONUtils.getAsJsonArray(pJson, "pattern")))
-            val width = pattern[0].length
-            val height = pattern.size
-
-            if (width > 6 || height > 6)
-                throw JsonSyntaxException("Pattern size is large then 36 slots...")
+            val width = 6
+            val height = 6
 
             val ingredient = ShapedRecipe.dissolvePattern(pattern, map, width, height)
             val output = ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(pJson, "result"))
@@ -111,10 +108,8 @@ class InscriberRecipe(
             return InscriberRecipe(pRecipeId, ingredient, output, width, height, time, energy)
         }
 
-        override fun fromNetwork(pRecipeId: ResourceLocation, pBuffer: PacketBuffer): InscriberRecipe? {
-            val width = pBuffer.readVarInt()
-            val height = pBuffer.readVarInt()
-            val ingredients = NonNullList.withSize(width * height, Ingredient.EMPTY)
+        override fun fromNetwork(pRecipeId: ResourceLocation, pBuffer: PacketBuffer): InscriberRecipe {
+            val ingredients = NonNullList.withSize(6 * 6, Ingredient.EMPTY)
 
             for (i in 0 until ingredients.size)
                 ingredients[i] = Ingredient.fromNetwork(pBuffer)
@@ -124,13 +119,10 @@ class InscriberRecipe(
             val time = pBuffer.readVarInt()
             val energy = pBuffer.readVarInt()
 
-            return InscriberRecipe(pRecipeId, ingredients, output, width, height, time, energy)
+            return InscriberRecipe(pRecipeId, ingredients, output, 6, 6, time, energy)
         }
 
         override fun toNetwork(pBuffer: PacketBuffer, pRecipe: InscriberRecipe) {
-            pBuffer.writeVarInt(pRecipe.width)
-            pBuffer.writeVarInt(pRecipe.height)
-
             for (ingredient in pRecipe.ingredient)
                 ingredient.toNetwork(pBuffer)
 

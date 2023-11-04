@@ -73,7 +73,7 @@ class StandaloneInscriberBlockEntity(private val inscriber: IInscriber) : Contai
             val recipeContainer = this.getCraftingInventory().toContainer()
 
             if (this.gridChanged && (this.recipe == null || !this.recipe!!.matches(recipeContainer, level))) {
-                val recipe = level.recipeManager.getRecipeFor(InscribersRecipeTypes.matrixInscriberRecipe, recipeContainer, level).orElse(null)
+                val recipe = level.recipeManager.getRecipeFor(InscribersRecipeTypes.inscriberRecipe, recipeContainer, level).orElse(null)
 
                 this.recipe = recipe
 
@@ -97,17 +97,18 @@ class StandaloneInscriberBlockEntity(private val inscriber: IInscriber) : Contai
                     else (this.timeOperation / tier.timeBoost).toInt()
 
                     if (StackHelper.canCombine(result, output) && energy.energyStored >= this.energyOperation) {
-                        this.isWorking = true
+                        val remaining = localRecipe.getRemainingItems(recipeContainer)
+                        for (i in 0 until recipeContainer.containerSize) {
+                            if (!remaining[i].isEmpty) inv.setStackInSlot(i, remaining[i])
+                            else inv.extract(i, 1, false)
+                        }
+
+                        if (!this.isWorking) this.isWorking = true
+
                         this.progress++
                         energy.extractEnergy(this.energyOperation, false)
                         if (this.progress >= this.timeOperation) {
-                            val remaining = localRecipe.getRemainingItems(recipeContainer)
-                            for (i in 0 until recipeContainer.containerSize) {
-                                if (!remaining[i].isEmpty) inv.setStackInSlot(i, remaining[i])
-                                else inv.extract(i, 1, false)
-                            }
-
-                            this.updateResult(result, outputSlot)
+                            this.recipe!!.result(this.getInv())
                             this.progress = 0
                             this.gridChanged = true
                             this.isWorking = false
